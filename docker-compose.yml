@@ -1,0 +1,20 @@
+version: '3.1'
+
+volumes:
+  postgres:
+
+services:
+  postgres:
+    image: postgis/postgis:12-master
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pNNIq4vKgRzo6BtI6_JJ5dH4y0f8KrTa
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis:latest
