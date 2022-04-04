@@ -1,8 +1,13 @@
 module.exports = {
   type: "postgres",
-  url: 'postgres://jzliibea:pNNIq4vKgRzo6BtI6_JJ5dH4y0f8KrTa@balarama.db.elephantsql.com/jzliibea',
+  url: 'postgres://grjphkjf:VwdLpZBeLymSito-74m26oBPcIXoA7Al@hattie.db.elephantsql.com/grjphkjf',
   entities: ['dist/**/*.entity.js'],
-  synchronize: true,
+  synchronize: false,
   factories: ["dist/**/database/factories/**/*.js"],
-  seeds: ["dist/**/database/seeds/**/*.js"]
+  seeds: ["dist/**/database/seeds/**/*.js"],
+  migrations: ["dist/migrations/*.js"],
+  migrationsTableName: "migrations",
+  cli: {
+        "migrationsDir": "src/migrations"
+  }
 }

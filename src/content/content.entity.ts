@@ -37,10 +37,8 @@ export class Content {
       'https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album',
     description: 'Ссылка на контент',
   })
-  @Column({
-    type: 'varchar',
-  })
-  link: string;
+  @Column({ type: 'varchar', array: true, default: () => "'[]'" })
+  link: Array<string>;
 
   @ManyToOne(() => User, (user) => user.contents, {
     onDelete: 'CASCADE',

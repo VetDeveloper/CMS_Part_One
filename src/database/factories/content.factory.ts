@@ -6,7 +6,11 @@ define(Content, (faker: typeof Faker) => {
   const content = new Content();
 
   const name = faker.lorem.word();
-  const link = faker.internet.url();
+  const link = [
+    faker.internet.url(),
+    faker.internet.url(),
+    faker.internet.url(),
+  ];
 
   content.name = name;
   content.link = link;

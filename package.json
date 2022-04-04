@@ -20,7 +20,12 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "db:seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
-    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config"
+    "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "migration:create": "npm run build && npm run typeorm migration:create -- -n",
+    "migration:generate": "npm run build && npm run typeorm migration:generate -- -n",
+    "migration:run": "npm run build && npm run typeorm migration:run",
+    "migration:down": "npm run typeorm migration:revert"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -32,6 +37,8 @@
     "@nestjs/typeorm": "^8.0.3",
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
+    "@types/aws-sdk": "^2.7.0",
+    "aws-sdk": "^2.1106.0",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
@@ -55,6 +62,7 @@
     "@types/express": "^4.17.13",
     "@types/faker": "^6.6.9",
     "@types/jest": "27.4.1",
+    "@types/multer": "^1.4.7",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
