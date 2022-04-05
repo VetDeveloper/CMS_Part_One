@@ -1,6 +1,16 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudController, Override } from '@nestjsx/crud';
 import { ContentOwnerGuard } from 'src/auth/guards/contentOwner.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/user/users.entity';
@@ -46,4 +56,29 @@ import { UpdateContentDTO } from './dto/update-content.dto';
 @Controller('contents')
 export class ContentController implements CrudController<Content> {
   constructor(public service: ContentService) {}
+
+  // @UseGuards(JwtAuthGuard, ContentOwnerGuard)
+  // @ApiBearerAuth()
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('/:id/files')
+  async createOneFile(
+    @Param('id') contentId: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.service.createOneFile(
+      contentId,
+      file.buffer,
+      file.originalname,
+    );
+  }
+
+  // @UseGuards(JwtAuthGuard, ContentOwnerGuard)
+  // @ApiBearerAuth()
+  @Delete('/:id/files')
+  async deleteOneFile(
+    @Param('id') contentId: number,
+    @Body() dto: { fileName: string },
+  ) {
+    return this.service.deleteOneFile(contentId, dto.fileName);
+  }
 }
