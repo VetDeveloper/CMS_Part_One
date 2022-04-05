@@ -1,5 +1,5 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   Crud,
   CrudAuth,
@@ -11,6 +11,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserOwnerGuard } from 'src/auth/guards/userOwner.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { ResponseUserDTO } from './dto/response-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserService } from './user.service';
 import { User } from './users.entity';
@@ -21,14 +22,32 @@ import { User } from './users.entity';
   },
   routes: {
     exclude: ['createManyBase', 'createOneBase'],
+    getOneBase: {
+      decorators: [ApiResponse({ status: 200, type: ResponseUserDTO })],
+    },
+    getManyBase: {
+      decorators: [ApiResponse({ status: 200, type: [ResponseUserDTO] })],
+    },
     updateOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, UserOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, UserOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: ResponseUserDTO }),
+      ],
     },
     replaceOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, UserOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, UserOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: ResponseUserDTO }),
+      ],
     },
     deleteOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, UserOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, UserOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: ResponseUserDTO }),
+      ],
     },
   },
   dto: {
@@ -47,15 +66,4 @@ import { User } from './users.entity';
 @Controller('users')
 export class UserController implements CrudController<User> {
   constructor(public service: UserService) {}
-
-  get base(): CrudController<User> {
-    return this;
-  }
-
-  @Override()
-  async getOne(@ParsedRequest() req: CrudRequest) {
-    const user: User = await this.base.getOneBase(req);
-    const { password, ...result } = user;
-    return result;
-  }
 }

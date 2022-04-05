@@ -7,7 +7,7 @@ import { CreateEventDTO } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
 import { Event } from './event.entity';
 import { EventService } from './event.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Crud({
   model: {
@@ -20,19 +20,45 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
   },
   routes: {
     createOneBase: {
-      decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 200, type: CreateEventDTO }),
+      ],
     },
     createManyBase: {
-      decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 200, type: [CreateEventDTO] }),
+      ],
     },
     updateOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, EventOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, EventOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreateEventDTO }),
+      ],
     },
     replaceOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, EventOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, EventOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreateEventDTO }),
+      ],
     },
     deleteOneBase: {
-      decorators: [UseGuards(JwtAuthGuard, EventOwnerGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard, EventOwnerGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreateEventDTO }),
+      ],
+    },
+    getOneBase: {
+      decorators: [ApiResponse({ status: 200, type: CreateEventDTO })],
+    },
+    getManyBase: {
+      decorators: [ApiResponse({ status: 200, type: [CreateEventDTO] })],
     },
   },
 })

@@ -1,5 +1,5 @@
 import { Controller, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PlaylistContentOwnerGuard } from 'src/auth/guards/playlistContentOwner.guard';
@@ -20,27 +20,47 @@ import { PlaylistContentService } from './playlist-content.service';
   },
   routes: {
     createOneBase: {
-      decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
+      decorators: [
+        UseGuards(JwtAuthGuard),
+        ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreatePlaylistContentDTO }),
+      ],
     },
     createManyBase: {
-      decorators: [UseGuards(JwtAuthGuard)],
+      decorators: [
+        UseGuards(JwtAuthGuard),
+        ApiResponse({ status: 201, type: [CreatePlaylistContentDTO] }),
+      ],
     },
     updateOneBase: {
       decorators: [
         UseGuards(JwtAuthGuard, PlaylistContentOwnerGuard),
         ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreatePlaylistContentDTO }),
       ],
     },
     replaceOneBase: {
       decorators: [
         UseGuards(JwtAuthGuard, PlaylistContentOwnerGuard),
         ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreatePlaylistContentDTO }),
       ],
     },
     deleteOneBase: {
       decorators: [
         UseGuards(JwtAuthGuard, PlaylistContentOwnerGuard),
         ApiBearerAuth(),
+        ApiResponse({ status: 201, type: CreatePlaylistContentDTO }),
+      ],
+    },
+    getOneBase: {
+      decorators: [
+        ApiResponse({ status: 200, type: CreatePlaylistContentDTO }),
+      ],
+    },
+    getManyBase: {
+      decorators: [
+        ApiResponse({ status: 200, type: [CreatePlaylistContentDTO] }),
       ],
     },
   },

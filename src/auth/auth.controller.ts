@@ -8,7 +8,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CrudRequest, ParsedBody, ParsedRequest } from '@nestjsx/crud';
+import { CrudRequest, ParsedRequest } from '@nestjsx/crud';
 import { CreateUserDTO } from 'src/user/dto/create-user.dto';
 import { User } from 'src/user/users.entity';
 import { AuthService } from './auth.service';
@@ -38,7 +38,7 @@ export class AuthController {
     description: 'Пользователь с таким email уже существует',
   })
   @ApiOperation({ summary: 'Регистрация' })
-  @ApiResponse({ status: 201, type: User })
+  @ApiResponse({ status: 201, type: typeof { token: 'eyJh' } })
   @Post('reg')
   async reg(@Body() userDto: CreateUserDTO, @ParsedRequest() req: CrudRequest) {
     return this.authService.registration(userDto);

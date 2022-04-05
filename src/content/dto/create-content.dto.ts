@@ -9,9 +9,9 @@ export class CreateContentDTO {
 
   @ApiProperty({
     example:
-      'https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album',
-    description: 'Ссылка на контент',
+      '[https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album]',
+    description: 'Ссылки на контент',
   })
   @IsString()
-  readonly link: string;
+  readonly link: Array<string>;
 }

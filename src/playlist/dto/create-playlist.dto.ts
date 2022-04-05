@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
 
-export class CreatePlaylistDto {
+export class ResponsePlaylistDto {
   @ApiProperty({
     example: '1',
     description: 'Идентификационный номер пользователя',

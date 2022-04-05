@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Repository } from 'typeorm';
-import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { ResponsePlaylistDto } from './dto/create-playlist.dto';
 import { Playlist } from './playlist.entity';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class PlaylistService extends TypeOrmCrudService<Playlist> {
     super(repo);
   }
 
-  async createOneByScreen(dto: CreatePlaylistDto): Promise<void> {
+  async createOneByScreen(dto: ResponsePlaylistDto): Promise<void> {
     this.repo.save(dto);
   }
 }
