@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Content } from 'src/content/content.entity';
 import { Playlist } from 'src/playlist/playlist.entity';
 import { User } from 'src/user/users.entity';
@@ -16,39 +17,22 @@ import {
 
 @Entity()
 export class PlaylistContent {
-  @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер плейлиста',
-  })
   @PrimaryColumn()
   playlistId: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер контенета',
-  })
   @PrimaryColumn()
   contentId: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер пользователя',
-  })
   @Column({ type: 'int' })
   userId: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Порядковый номер контента в плейлисте',
-  })
   @PrimaryColumn()
   ordinalNumber: number;
 
-  @ApiProperty({ example: '1', description: 'Длительность контента' })
   @Column({ type: 'float' })
   duration: number;
 

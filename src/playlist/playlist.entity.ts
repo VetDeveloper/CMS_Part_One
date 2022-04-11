@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Event } from 'src/event/event.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
 import { Screen } from 'src/screen/screen.entity';
@@ -17,35 +18,22 @@ import {
 
 @Entity()
 export class Playlist {
-  @ApiProperty({ example: '1', description: 'Идентификационный номер' })
+  @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: '1', description: 'Идентификационный номер экрана' })
   @Column({ type: 'int' })
   screenId: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер пользователя',
-  })
   @Column({ type: 'int' })
   userId: number;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата создания пользователя',
-  })
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   created_at: Date;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата обновления пользователя',
-  })
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

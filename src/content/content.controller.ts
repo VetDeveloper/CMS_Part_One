@@ -3,15 +3,25 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { ContentOwnerGuard } from 'src/auth/guards/contentOwner.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserDTO } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
+import { ContentDTO } from './dto/content.dto';
 import { CreateContentDTO } from './dto/create-content.dto';
+import { ResponseContentDTO } from './dto/response-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
 
 @Crud({
   model: {
-    type: Content,
+    type: ContentDTO,
+  },
+  serialize: {
+    update: ResponseContentDTO,
+    get: ResponseContentDTO,
+    delete: ResponseContentDTO,
+    create: ResponseContentDTO,
+    replace: ResponseContentDTO,
   },
   dto: {
     create: CreateContentDTO,
@@ -38,12 +48,12 @@ import { UpdateContentDTO } from './dto/update-content.dto';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: User) => ({
+  persist: (user: UserDTO) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Content')
 @Controller('contents')
-export class ContentController implements CrudController<Content> {
+export class ContentController implements CrudController<ContentDTO> {
   constructor(public service: ContentService) {}
 }

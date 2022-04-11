@@ -1,35 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNumber,
-  IsString,
-  Length,
-  MaxLength,
-} from 'class-validator';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
+import { PlaylistContentDTO } from './playlist-content.dto';
 
-export class CreatePlaylistContentDTO {
-  @ApiProperty({
-    example: '1',
-    description: 'Порядковый номер контента в плейлисте',
-  })
-  @IsNumber()
-  readonly ordinalNumber: number;
-
-  @ApiProperty({ example: '23', description: 'Длительность контента' })
-  @IsNumber()
-  readonly duration: number;
-
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер контенета',
-  })
-  @IsNumber()
-  readonly contentId: number;
-
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер плейлиста',
-  })
-  @IsNumber()
-  readonly playlistId: number;
-}
+export class CreatePlaylistContentDTO extends PickType(PlaylistContentDTO, [
+  'ordinalNumber',
+  'duration',
+  'contentId',
+  'playlistId',
+]) {}

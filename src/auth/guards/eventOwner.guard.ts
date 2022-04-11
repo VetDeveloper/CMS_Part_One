@@ -1,5 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { EventDTO } from 'src/event/dto/event.dto';
 import { Event } from 'src/event/event.entity';
 import { EventService } from 'src/event/event.service';
 
@@ -15,9 +21,14 @@ export class EventOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const eventId = parseInt(req.params.id);
 
-    let ownerId: Promise<Event> = this.eventService.findOne(eventId);
+    let ownerId: Promise<EventDTO> = this.eventService.findOne(eventId);
 
     return ownerId.then((resp) => {
+      try {
+        resp.userId;
+      } catch (e) {
+        throw new NotFoundException(e);
+      }
       return logUserId === resp.userId;
     });
   }

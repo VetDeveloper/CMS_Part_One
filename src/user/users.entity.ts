@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Content } from 'src/content/content.entity';
 import { Event } from 'src/event/event.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
@@ -16,11 +17,10 @@ import {
 
 @Entity()
 export class User {
-  @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @PrimaryGeneratedColumn()
+  @Exclude()
   id: number;
 
-  @ApiProperty({ example: 'user@mail.ru', description: 'Почта' })
   @Column({
     type: 'varchar',
     length: 35,
@@ -28,26 +28,18 @@ export class User {
   })
   email: string;
 
-  @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
   @Column({
     type: 'varchar',
   })
+  @Exclude()
   password: string;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата создания пользователя',
-  })
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   created_at: Date;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата обновления пользователя',
-  })
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

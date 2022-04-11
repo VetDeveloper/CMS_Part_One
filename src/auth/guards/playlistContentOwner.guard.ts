@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
 import { PlaylistContentService } from 'src/playlist-content/playlist-content.service';
@@ -19,6 +24,11 @@ export class PlaylistContentOwnerGuard implements CanActivate {
       this.playlistContentService.findOne(playlistContentId);
 
     return ownerId.then((resp) => {
+      try {
+        resp.userId;
+      } catch (e) {
+        throw new NotFoundException(e);
+      }
       return logUserId === resp.userId;
     });
   }

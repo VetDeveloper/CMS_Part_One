@@ -1,15 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNumber } from 'class-validator';
+import { PlaylistDTO } from './playlist.dto';
 
-export class CreatePlaylistDto {
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер пользователя',
-  })
-  @IsNumber()
-  readonly userId: number;
-
-  @IsNumber()
-  @ApiProperty({ example: '1', description: 'Идентификационный номер экрана' })
-  readonly screenId: number;
-}
+export class CreatePlaylistDto extends PickType(PlaylistDTO, [
+  'userId',
+  'screenId',
+]) {}

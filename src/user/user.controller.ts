@@ -1,23 +1,18 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  Crud,
-  CrudAuth,
-  CrudController,
-  CrudRequest,
-  Override,
-  ParsedRequest,
-} from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserOwnerGuard } from 'src/auth/guards/userOwner.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { ResponseUserDTO } from './dto/response-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
+import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { User } from './users.entity';
 
 @Crud({
   model: {
-    type: User,
+    type: UserDTO,
   },
   routes: {
     exclude: ['createManyBase', 'createOneBase'],
@@ -31,6 +26,13 @@ import { User } from './users.entity';
       decorators: [UseGuards(JwtAuthGuard, UserOwnerGuard), ApiBearerAuth()],
     },
   },
+  serialize: {
+    update: ResponseUserDTO,
+    get: ResponseUserDTO,
+    delete: ResponseUserDTO,
+    create: ResponseUserDTO,
+    replace: ResponseUserDTO,
+  },
   dto: {
     create: CreateUserDTO,
     update: UpdateUserDTO,
@@ -39,23 +41,12 @@ import { User } from './users.entity';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: User) => ({
+  persist: (user: UserDTO) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Users')
 @Controller('users')
-export class UserController implements CrudController<User> {
+export class UserController implements CrudController<UserDTO> {
   constructor(public service: UserService) {}
-
-  get base(): CrudController<User> {
-    return this;
-  }
-
-  @Override()
-  async getOne(@ParsedRequest() req: CrudRequest) {
-    const user: User = await this.base.getOneBase(req);
-    const { password, ...result } = user;
-    return result;
-  }
 }

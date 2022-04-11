@@ -1,5 +1,12 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { ScreenDTO } from 'src/screen/dto/screen.dto';
 import { Screen } from 'src/screen/screen.entity';
 import { ScreenService } from 'src/screen/screen.service';
 
@@ -15,9 +22,14 @@ export class ScreenOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const screenId = parseInt(req.params.id);
 
-    let ownerId: Promise<Screen> = this.screenService.findOne(screenId);
+    let ownerId: Promise<ScreenDTO> = this.screenService.findOne(screenId);
 
     return ownerId.then((resp) => {
+      try {
+        resp.userId;
+      } catch (e) {
+        throw new NotFoundException(e);
+      }
       return logUserId === resp.userId;
     });
   }

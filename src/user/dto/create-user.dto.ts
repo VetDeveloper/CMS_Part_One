@@ -1,12 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, Length, MaxLength } from 'class-validator';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsEmail, IsString } from 'class-validator';
+import { UserDTO } from './user.dto';
 
-export class CreateUserDTO {
-  @ApiProperty({ example: 'user@mail.ru', description: 'Почта' })
-  @IsEmail()
-  readonly email: string;
-
-  @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
-  @IsString()
-  readonly password: string;
-}
+export class CreateUserDTO extends PickType(UserDTO, [
+  'email',
+  'password',
+] as const) {}

@@ -4,14 +4,14 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Observable } from 'rxjs';
-import { UserDTO } from 'src/user/dto/user.dto';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/user/users.entity';
 
 @Injectable()
-export class UserOwnerGuard implements CanActivate {
-  constructor(private userService: UserService) {}
+export class CommonOwnerGuard<T extends { userId: number }>
+  implements CanActivate
+{
+  constructor(private contentService: TypeOrmCrudService<T>) {}
 
   canActivate(
     context: ExecutionContext,
@@ -19,17 +19,18 @@ export class UserOwnerGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     const logUserId = req.user.id;
-    const userId = parseInt(req.params.id);
+    const contentId = parseInt(req.params.id);
 
-    let ownerId: Promise<UserDTO> = this.userService.findOne(userId);
+    let ownerId: Promise<T | { userId: number }> =
+      this.contentService.findOne(contentId);
 
     return ownerId.then((resp) => {
       try {
-        resp.id;
+        resp.userId;
       } catch (e) {
         throw new NotFoundException(e);
       }
-      return logUserId === resp.id;
+      return logUserId === resp.userId;
     });
   }
 }
