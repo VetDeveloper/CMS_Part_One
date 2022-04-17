@@ -5,8 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
-import { PlaylistContentService } from 'src/playlist-content/playlist-content.service';
+import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
+import { PlaylistContentService } from 'src/playlist-content/playlistcontent.service';
 
 @Injectable()
 export class PlaylistContentOwnerGuard implements CanActivate {

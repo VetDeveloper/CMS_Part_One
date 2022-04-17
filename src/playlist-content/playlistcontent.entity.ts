@@ -12,25 +12,26 @@ import {
   OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
+@Unique(['playlistId', 'contentId', 'ordinalNumber'])
 export class PlaylistContent {
   @PrimaryGeneratedColumn()
-  @Exclude()
   id: number;
 
-  @PrimaryColumn()
+  @Column()
   playlistId: number;
 
-  @PrimaryColumn()
+  @Column()
   contentId: number;
 
   @Column({ type: 'int' })
   userId: number;
 
-  @PrimaryColumn()
+  @Column()
   ordinalNumber: number;
 
   @Column({ type: 'float' })
@@ -40,17 +41,17 @@ export class PlaylistContent {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'playlistId' })
-  playlist: Playlist;
+  playlist?: Playlist;
 
   @ManyToOne(() => User, (user) => user.playlistContents, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user?: User;
 
   @ManyToOne(() => Content, (content) => content.playlistContents, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'contentId' })
-  content: Content;
+  content?: Content;
 }

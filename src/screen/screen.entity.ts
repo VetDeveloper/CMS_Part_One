@@ -16,7 +16,6 @@ import {
 
 @Entity()
 export class Screen {
-  @Exclude()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,31 +25,24 @@ export class Screen {
   @Column({ type: 'int' })
   userId: number;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  updated_at: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.screens, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user?: User;
 
   @ManyToOne(() => Event, (ev) => ev.screens, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'eventId' })
-  event: Event;
+  event?: Event;
 
   @OneToOne(() => Playlist, (playlist) => playlist.screen)
-  playlist: Playlist;
+  playlist?: Playlist;
 }

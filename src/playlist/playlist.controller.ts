@@ -2,7 +2,7 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PlaylistOwnerGuard } from 'src/auth/guards/playlistOwner.guard';
+import { PlaylistOwnerGuard } from 'src/playlist/guards/playlistOwner.guard';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
 import { PlaylistDTO } from './dto/playlist.dto';

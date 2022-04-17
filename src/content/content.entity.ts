@@ -1,19 +1,20 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/user/users.entity';
-import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
+import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Content {
   @PrimaryGeneratedColumn()
-  @Exclude()
   id: number;
 
   @Column({ type: 'int' })
@@ -30,15 +31,21 @@ export class Content {
   })
   link: string;
 
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
   @ManyToOne(() => User, (user) => user.contents, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user?: User;
 
   @OneToMany(
     () => PlaylistContent,
     (playlistContent) => playlistContent.playlist,
   )
-  playlistContents: PlaylistContent[];
+  playlistContents?: PlaylistContent[];
 }

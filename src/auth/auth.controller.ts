@@ -8,12 +8,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CrudRequest, ParsedBody, ParsedRequest } from '@nestjsx/crud';
 import { CreateUserDTO } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/users.entity';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { AuthResponse } from './dto/response.auth.dto';
+import { ValidLoginGuard } from './guards/validlogin.guard';
+import { ValidRegistrationGuard } from './guards/validreg.guard';
 
 @ApiTags('Logon and Login')
 @Controller('auth')
@@ -23,24 +23,32 @@ export class AuthController {
   @ApiResponse({
     status: 201,
     description: 'Успешная авторизация',
-    type: typeof { token: 'eyJh' },
+    type: AuthResponse,
   })
   @ApiUnauthorizedResponse({ description: 'Неправильный email или пароль' })
   @ApiOperation({ summary: 'Авторизация' })
   @ApiBody({ type: LoginUserDTO })
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(ValidLoginGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Body() user: LoginUserDTO) {
+    const answ = AuthResponse.create(await this.authService.login(user));
+    return answ;
   }
 
   @ApiBadRequestResponse({
     description: 'Пользователь с таким email уже существует',
   })
   @ApiOperation({ summary: 'Регистрация' })
-  @ApiResponse({ status: 201, type: User })
+  @ApiResponse({
+    status: 201,
+    type: AuthResponse,
+  })
+  @UseGuards(ValidRegistrationGuard)
   @Post('reg')
-  async reg(@Body() userDto: CreateUserDTO, @ParsedRequest() req: CrudRequest) {
-    return this.authService.registration(userDto);
+  async reg(@Body() userDto: CreateUserDTO) {
+    const answ = AuthResponse.create(
+      await this.authService.registration(userDto),
+    );
+    return answ;
   }
 }

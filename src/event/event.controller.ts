@@ -1,7 +1,7 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { EventOwnerGuard } from 'src/auth/guards/eventOwner.guard';
+import { EventOwnerGuard } from 'src/event/guards/eventOwner.guard';
 import { CreateEventDTO } from './dto/create-event.dto';
 import { UpdateEventDTO } from './dto/update-event.dto';
 import { EventService } from './event.service';

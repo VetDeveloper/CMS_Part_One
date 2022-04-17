@@ -7,10 +7,11 @@ import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { ScreenDTO } from './dto/screen.dto';
 import { Screen } from './screen.entity';
+import { ScreenReposityry } from './screen.reposityry';
 
 @Injectable()
 export class ScreenService extends TypeOrmCrudService<ScreenDTO> {
-  constructor(@InjectRepository(Screen) repo: Repository<Screen>) {
+  constructor(public repo: ScreenReposityry) {
     super(repo);
   }
 }

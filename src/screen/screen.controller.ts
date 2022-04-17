@@ -12,7 +12,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'src/user/users.entity';
 import { Screen } from './screen.entity';
 import { ScreenService } from './screen.service';
-import { ScreenOwnerGuard } from 'src/auth/guards/screenOwner.guard';
+import { ScreenOwnerGuard } from 'src/screen/guards/screenOwner.guard';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScreenDTO } from './dto/screen.dto';

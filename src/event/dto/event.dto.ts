@@ -1,18 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { ScreenDTO } from 'src/screen/dto/screen.dto';
 import { UserDTO } from 'src/user/dto/user.dto';
 
 export class EventDTO {
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @Exclude()
+  @IsInt()
+  @IsPositive()
   id: number;
 
   @ApiProperty({
     example: '1',
     description: 'Идентификационный номер пользователя',
   })
+  @IsInt()
+  @IsPositive()
   userId: number;
 
   @ApiProperty({
@@ -28,15 +38,15 @@ export class EventDTO {
     example: '2022-03-12 02:14:08.956309',
     description: 'Дата создания пользователя',
   })
-  created_at: Date;
+  createdAt: Date;
 
   @ApiProperty({
     example: '2022-03-12 02:14:08.956309',
     description: 'Дата обновления пользователя',
   })
-  updated_at: Date;
+  updatedAt: Date;
 
-  user: UserDTO;
+  user?: UserDTO;
 
-  screens: ScreenDTO[];
+  screens?: ScreenDTO[];
 }

@@ -1,7 +1,7 @@
 import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
-import { ContentOwnerGuard } from 'src/auth/guards/contentOwner.guard';
+import { ContentOwnerGuard } from 'src/content/guards/contentOwner.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';

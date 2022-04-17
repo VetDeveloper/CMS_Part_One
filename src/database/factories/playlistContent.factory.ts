@@ -1,6 +1,6 @@
 import { define } from 'typeorm-seeding';
 import * as Faker from 'faker';
-import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
+import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
 
 define(PlaylistContent, (faker: typeof Faker) => {
   const playlistContent = new PlaylistContent();

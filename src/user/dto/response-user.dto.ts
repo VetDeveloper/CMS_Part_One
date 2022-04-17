@@ -4,7 +4,8 @@ import { User } from '../users.entity';
 import { UserDTO } from './user.dto';
 
 export class ResponseUserDTO extends PickType(UserDTO, [
+  'id',
   'email',
-  'created_at',
-  'updated_at',
+  'createdAt',
+  'updatedAt',
 ]) {}

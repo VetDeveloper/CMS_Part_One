@@ -2,15 +2,15 @@ import { Controller, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PlaylistContentOwnerGuard } from 'src/auth/guards/playlistContentOwner.guard';
+import { PlaylistContentOwnerGuard } from 'src/playlist-content/guards/playlistContentOwner.guard';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
-import { CreatePlaylistContentDTO } from './dto/create-playlistContent.dto';
-import { PlaylistContentDTO } from './dto/playlist-content.dto';
-import { ResponsePlaylistContentDTO } from './dto/response-playlist.dto';
+import { CreatePlaylistContentDTO } from './dto/createplaylistContent.dto';
+import { PlaylistContentDTO } from './dto/playlistcontent.dto';
+import { ResponsePlaylistContentDTO } from './dto/responseplaylist.dto';
 import { UpdatePlaylistContentDTO } from './dto/update-playlistContent.dto';
-import { PlaylistContent } from './playlist-content.entity';
-import { PlaylistContentService } from './playlist-content.service';
+import { PlaylistContent } from './playlistcontent.entity';
+import { PlaylistContentService } from './playlistcontent.service';
 
 @Crud({
   model: {

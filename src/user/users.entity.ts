@@ -2,10 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Content } from 'src/content/content.entity';
 import { Event } from 'src/event/event.entity';
-import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
+import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
 import { Playlist } from 'src/playlist/playlist.entity';
 import { Screen } from 'src/screen/screen.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -14,11 +16,17 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
+
   @PrimaryGeneratedColumn()
-  @Exclude()
   id: number;
 
   @Column({
@@ -34,34 +42,27 @@ export class User {
   @Exclude()
   password: string;
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  updated_at: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @OneToMany(() => Event, (ev) => ev.user)
-  events: Event[];
+  events?: Event[];
 
   @OneToMany(() => Screen, (sc) => sc.user)
-  screens: Screen[];
+  screens?: Screen[];
 
   @OneToMany(() => Playlist, (playlist) => playlist.user)
-  playlists: Playlist[];
+  playlists?: Playlist[];
 
   @OneToMany(() => Content, (content) => content.user)
-  contents: Content[];
+  contents?: Content[];
 
   @OneToMany(
     () => PlaylistContent,
     (playlistContent) => playlistContent.playlist,
   )
-  playlistContents: PlaylistContent[];
+  playlistContents?: PlaylistContent[];
 }

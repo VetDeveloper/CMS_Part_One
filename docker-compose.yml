@@ -24,6 +24,7 @@ services:
     command: npm run start:dev
     env_file:
       - ormconfig.js
+      - test.env
     depends_on:
       - postgres
 

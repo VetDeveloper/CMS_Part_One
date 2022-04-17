@@ -1,8 +1,22 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
+import { Body, Controller, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  Crud,
+  CrudAuth,
+  CrudController,
+  CrudRequest,
+  Override,
+  ParsedBody,
+  ParsedRequest,
+} from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UserOwnerGuard } from 'src/auth/guards/userOwner.guard';
+import { UserOwnerGuard } from 'src/user/guards/userOwner.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { ResponseUserDTO } from './dto/response-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
@@ -49,4 +63,18 @@ import { User } from './users.entity';
 @Controller('users')
 export class UserController implements CrudController<UserDTO> {
   constructor(public service: UserService) {}
+
+  get base(): CrudController<UserDTO> {
+    return this;
+  }
+
+  @ApiOperation({ summary: 'Обновление пользователя' })
+  @ApiResponse({ status: 200, type: User })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @UseGuards(JwtAuthGuard, UserOwnerGuard)
+  @ApiBearerAuth()
+  @Override('updateOneBase')
+  updateOne(@Body() dto: UpdateUserDTO) {
+    return this.service.updateOneUser(dto);
+  }
 }
