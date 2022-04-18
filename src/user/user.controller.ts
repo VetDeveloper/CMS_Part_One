@@ -69,7 +69,7 @@ export class UserController implements CrudController<UserDTO> {
   }
 
   @ApiOperation({ summary: 'Обновление пользователя' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: ResponseUserDTO })
   @ApiNotFoundResponse({ description: 'Not found.' })
   @UseGuards(JwtAuthGuard, UserOwnerGuard)
   @ApiBearerAuth()
