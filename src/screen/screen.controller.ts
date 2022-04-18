@@ -8,7 +8,7 @@ import {
   ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { User } from 'src/user/users.entity';
 import { Screen } from './screen.entity';
 import { ScreenService } from './screen.service';
@@ -17,7 +17,7 @@ import { PlaylistService } from 'src/playlist/playlist.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ScreenDTO } from './dto/screen.dto';
 import { UserDTO } from 'src/user/dto/user.dto';
-import { ResponseScreenDTO } from './dto/response-creen.dto';
+import { ResponseScreenDTO } from './dto/response.creen.dto';
 
 @Crud({
   model: {

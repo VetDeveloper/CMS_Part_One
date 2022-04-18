@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { ContentDTO } from 'src/content/dto/content.dto';
 import { EventDTO } from 'src/event/dto/event.dto';
-import { PlaylistContentDTO } from 'src/playlist-content/dto/playlistcontent.dto';
+import { PlaylistContentDTO } from 'src/playlistcontent/dto/playlistcontent.dto';
 import { PlaylistDTO } from 'src/playlist/dto/playlist.dto';
 import { ScreenDTO } from 'src/screen/dto/screen.dto';
 

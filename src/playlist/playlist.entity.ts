@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Event } from 'src/event/event.entity';
-import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
+import { PlaylistContent } from 'src/playlistcontent/playlistcontent.entity';
 import { Screen } from 'src/screen/screen.entity';
 import { User } from 'src/user/users.entity';
 import {

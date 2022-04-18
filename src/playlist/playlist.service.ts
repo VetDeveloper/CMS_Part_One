@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Repository } from 'typeorm';
-import { CreatePlaylistDto } from './dto/create-playlist.dto';
+import { CreatePlaylistDto } from './dto/create.playlist.dto';
 import { PlaylistDTO } from './dto/playlist.dto';
 import { Playlist } from './playlist.entity';
 import { PlaylistReposityry } from './playlist.repository';

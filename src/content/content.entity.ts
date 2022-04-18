@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from 'src/user/users.entity';
-import { PlaylistContent } from 'src/playlist-content/playlistcontent.entity';
+import { PlaylistContent } from 'src/playlistcontent/playlistcontent.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity()
