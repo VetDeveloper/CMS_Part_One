@@ -7,7 +7,6 @@ import { UserDTO } from 'src/user/dto/user.dto';
 
 export class PlaylistDTO {
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
-  @Exclude()
   @IsInt()
   @IsPositive()
   id: number;
