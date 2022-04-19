@@ -12,8 +12,6 @@ import { CreateUserDTO } from 'src/user/dto/create.user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login.user.dto';
 import { AuthResponse } from './dto/response.auth.dto';
-import { ValidLoginGuard } from './guards/validlogin.guard';
-import { ValidRegistrationGuard } from './guards/validreg.guard';
 
 @ApiTags('Logon and Login')
 @Controller('auth')
@@ -28,7 +26,6 @@ export class AuthController {
   @ApiUnauthorizedResponse({ description: 'Неправильный email или пароль' })
   @ApiOperation({ summary: 'Авторизация' })
   @ApiBody({ type: LoginUserDTO })
-  @UseGuards(ValidLoginGuard)
   @Post('login')
   async login(@Body() user: LoginUserDTO) {
     const answ = AuthResponse.create(await this.authService.login(user));
@@ -43,7 +40,6 @@ export class AuthController {
     status: 201,
     type: AuthResponse,
   })
-  @UseGuards(ValidRegistrationGuard)
   @Post('reg')
   async reg(@Body() userDto: CreateUserDTO) {
     const answ = AuthResponse.create(

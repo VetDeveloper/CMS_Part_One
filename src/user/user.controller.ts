@@ -1,4 +1,10 @@
-import { Body, Controller, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiNotFoundResponse,
@@ -74,7 +80,7 @@ export class UserController implements CrudController<UserDTO> {
   @UseGuards(JwtAuthGuard, UserOwnerGuard)
   @ApiBearerAuth()
   @Override('updateOneBase')
-  updateOne(@Body() dto: UpdateUserDTO) {
-    return this.service.updateOneUser(dto);
+  updateOne(@Body() dto: UpdateUserDTO, @Param('id', ParseIntPipe) id: number) {
+    return this.service.updateOneUser(dto, id);
   }
 }

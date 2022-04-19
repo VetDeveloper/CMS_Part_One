@@ -23,7 +23,7 @@ export class AuthService {
     const user = await this.userService.getUserByEmail(email);
 
     if (!user) {
-      return null;
+      throw new UnauthorizedException('Пользователь с таким email не найден');
     }
 
     const passwordEquals = await bcrypt.compare(pass, user.password);
@@ -33,11 +33,11 @@ export class AuthService {
       return result;
     }
 
-    return null;
+    throw new UnauthorizedException('Неправильный пароль');
   }
 
   async login(dto: LoginUserDTO) {
-    const user: UserDTO = await this.userService.getUserByEmail(dto.email);
+    const user: UserDTO = await this.validateUser(dto.email, dto.password);
     const payload = { id: user.id, email: user.email };
     return {
       user: { ...user },
@@ -46,6 +46,14 @@ export class AuthService {
   }
 
   async registration(userDto: CreateUserDTO) {
+    const isUserAlreadyExist = await this.userService.getUserByEmail(
+      userDto.email,
+    );
+    if (isUserAlreadyExist) {
+      throw new BadRequestException(
+        'Пользователь с таким email уже существует',
+      );
+    }
     const user = await this.userService.registrateOne(userDto);
     const payload = { email: user.email, id: user.id };
     return {

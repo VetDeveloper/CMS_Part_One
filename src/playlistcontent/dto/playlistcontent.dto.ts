@@ -45,6 +45,7 @@ export class PlaylistContentDTO {
 
   @ApiProperty({ example: '1', description: 'Длительность контента' })
   @IsNumber()
+  @IsInt()
   duration: number;
 
   playlist?: PlaylistDTO;

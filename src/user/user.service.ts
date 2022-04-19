@@ -8,12 +8,12 @@ import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create.user.dto';
 import { UpdateUserDTO } from './dto/update.user.dto';
 import { UserDTO } from './dto/user.dto';
-import { UsersReposityry } from './user.reposityry';
+import { UsersRepository } from './user.repository';
 import { User } from './users.entity';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserDTO> {
-  constructor(public repo: UsersReposityry, @Inject(REQUEST) private req) {
+  constructor(public repo: UsersRepository, @Inject(REQUEST) private req) {
     super(repo);
   }
 
@@ -27,8 +27,7 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
     return this.repo.save(newUser);
   }
 
-  async updateOneUser(dto: UpdateUserDTO) {
-    const id: number = this.req.params.id;
+  async updateOneUser(dto: UpdateUserDTO, id: number) {
     const user: UserDTO = await this.repo.findOneOrFail(id);
     const newUser = await this.repo.create({ ...user, ...dto });
     return await this.repo.save(newUser);

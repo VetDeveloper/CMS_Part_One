@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import {
   IsEmail,
   IsInt,
   IsNumber,
   IsPositive,
+  isString,
   IsString,
 } from 'class-validator';
 import { ContentDTO } from 'src/content/dto/content.dto';
@@ -28,7 +28,6 @@ export class UserDTO {
 
   @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
   @IsString()
-  @Exclude()
   password: string;
 
   @ApiProperty({
