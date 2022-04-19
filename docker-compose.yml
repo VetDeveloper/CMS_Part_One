@@ -23,8 +23,8 @@ services:
       - 5000:5000
     command: npm run start:dev
     env_file:
-      - ormconfig.js
-      - test.env
+      #- ormconfig.js
+      - .env
     depends_on:
       - postgres
 

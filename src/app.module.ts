@@ -10,11 +10,39 @@ import { AuthModule } from './auth/auth.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { PlaylistContentModule } from './playlistcontent/playlistcontent.module';
 import { ContentModule } from './content/content.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({}),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        SECRET_KEY: Joi.string().default('SECRETKEY'),
+        DB_PORT: Joi.number().default(5432),
+        DB_HOST: Joi.string().required(),
+        DB_USERNAME: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DATABASE: Joi.string().required(),
+        DB_SYNCHRONIZE: Joi.boolean().default(true),
+      }),
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        port: configService.get('DB_PORT'),
+        host: configService.get('DB_HOST'),
+        password: configService.get('DB_PASSWORD'),
+        username: configService.get('DB_USERNAME'),
+        entities: ['dist/**/*.entity.js'],
+        database: configService.get('DATABASE'),
+        factories: ['dist/**/database/factories/**/*.js'],
+        synchronize: configService.get('DB_SYNCHRONIZE'),
+        seeds: ['dist/**/database/seeds/**/*.js'],
+      }),
+    }),
     UserModule,
     EventModule,
     ScreenModule,
