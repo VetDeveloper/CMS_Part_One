@@ -1,20 +1,32 @@
 version: '3.1'
 
-volumes:
-  postgres:
-
 services:
-  postgres:
-    image: postgis/postgis:12-master
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: pNNIq4vKgRzo6BtI6_JJ5dH4y0f8KrTa
-
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8000:8000
 
-  redis:
-    image: redis:latest
+  postgres:
+    image: postgis/postgis:12-master
+    environment:
+      POSTGRES_DB: purr_2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sashkamihaylov.
+    restart: always
+
+  main:
+    container_name: main
+    build:
+      context: .
+    ports:
+      - 5000:5000
+    command: npm run start:dev
+    env_file:
+      #- ormconfig.js
+      - .env
+    depends_on:
+      - postgres
+
+volumes:
+  postgres:

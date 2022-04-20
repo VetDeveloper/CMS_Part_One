@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Event } from 'src/event/event.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
 import { Screen } from 'src/screen/screen.entity';
@@ -17,57 +18,36 @@ import {
 
 @Entity()
 export class Playlist {
-  @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: '1', description: 'Идентификационный номер экрана' })
   @Column({ type: 'int' })
   screenId: number;
 
-  @ApiProperty({
-    example: '1',
-    description: 'Идентификационный номер пользователя',
-  })
   @Column({ type: 'int' })
   userId: number;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата создания пользователя',
-  })
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата обновления пользователя',
-  })
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  updated_at: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @OneToOne(() => Screen, (scr) => scr.playlist, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'screenId' })
-  screen: Screen;
+  screen?: Screen;
 
   @ManyToOne(() => User, (user) => user.playlists, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user?: User;
 
   @OneToMany(
     () => PlaylistContent,
     (playlistContent) => playlistContent.playlist,
   )
-  playlistContents: PlaylistContent[];
+  playlistContents?: PlaylistContent[];
 }

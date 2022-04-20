@@ -1,23 +1,38 @@
-import { Controller, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import {
   Crud,
   CrudAuth,
   CrudController,
   CrudRequest,
   Override,
+  ParsedBody,
   ParsedRequest,
 } from '@nestjsx/crud';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { UserOwnerGuard } from 'src/auth/guards/userOwner.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
+import { UserOwnerGuard } from 'src/user/guards/user-owner.guard';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { ResponseUserDTO } from './dto/response-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
+import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { User } from './users.entity';
 
 @Crud({
   model: {
-    type: User,
+    type: UserDTO,
   },
   routes: {
     exclude: ['createManyBase', 'createOneBase'],
@@ -31,6 +46,13 @@ import { User } from './users.entity';
       decorators: [UseGuards(JwtAuthGuard, UserOwnerGuard), ApiBearerAuth()],
     },
   },
+  serialize: {
+    update: ResponseUserDTO,
+    get: ResponseUserDTO,
+    delete: ResponseUserDTO,
+    create: ResponseUserDTO,
+    replace: ResponseUserDTO,
+  },
   dto: {
     create: CreateUserDTO,
     update: UpdateUserDTO,
@@ -39,23 +61,26 @@ import { User } from './users.entity';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: User) => ({
+  persist: (user: UserDTO) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Users')
 @Controller('users')
-export class UserController implements CrudController<User> {
+export class UserController implements CrudController<UserDTO> {
   constructor(public service: UserService) {}
 
-  get base(): CrudController<User> {
+  get base(): CrudController<UserDTO> {
     return this;
   }
 
-  @Override()
-  async getOne(@ParsedRequest() req: CrudRequest) {
-    const user: User = await this.base.getOneBase(req);
-    const { password, ...result } = user;
-    return result;
+  @ApiOperation({ summary: 'Обновление пользователя' })
+  @ApiResponse({ status: 200, type: ResponseUserDTO })
+  @ApiNotFoundResponse({ description: 'Not found.' })
+  @UseGuards(JwtAuthGuard, UserOwnerGuard)
+  @ApiBearerAuth()
+  @Override('updateOneBase')
+  updateOne(@Body() dto: UpdateUserDTO, @Param('id', ParseIntPipe) id: number) {
+    return this.service.updateOneUser(dto, id);
   }
 }

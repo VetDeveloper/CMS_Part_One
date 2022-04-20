@@ -1,10 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import { Content } from 'src/content/content.entity';
 import { Event } from 'src/event/event.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
 import { Playlist } from 'src/playlist/playlist.entity';
 import { Screen } from 'src/screen/screen.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -13,14 +16,18 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: '1', description: 'Идентификационный номер' })
+  @BeforeInsert()
+  async hashPassword() {
+    this.password = await bcrypt.hash(this.password, 5);
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty({ example: 'user@mail.ru', description: 'Почта' })
   @Column({
     type: 'varchar',
     length: 35,
@@ -28,48 +35,33 @@ export class User {
   })
   email: string;
 
-  @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
   @Column({
     type: 'varchar',
   })
+  @Exclude()
   password: string;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата создания пользователя',
-  })
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  created_at: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @ApiProperty({
-    example: '2022-03-12 02:14:08.956309',
-    description: 'Дата обновления пользователя',
-  })
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
-  updated_at: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @OneToMany(() => Event, (ev) => ev.user)
-  events: Event[];
+  events?: Event[];
 
   @OneToMany(() => Screen, (sc) => sc.user)
-  screens: Screen[];
+  screens?: Screen[];
 
   @OneToMany(() => Playlist, (playlist) => playlist.user)
-  playlists: Playlist[];
+  playlists?: Playlist[];
 
   @OneToMany(() => Content, (content) => content.user)
-  contents: Content[];
+  contents?: Content[];
 
   @OneToMany(
     () => PlaylistContent,
     (playlistContent) => playlistContent.playlist,
   )
-  playlistContents: PlaylistContent[];
+  playlistContents?: PlaylistContent[];
 }

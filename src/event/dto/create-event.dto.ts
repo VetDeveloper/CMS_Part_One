@@ -1,13 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { EventDTO } from './event.dto';
 
-export class CreateEventDTO {
-  @ApiProperty({
-    example: 'Встреча выпускников',
-    description: 'Название мероприятия',
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(40)
-  readonly name: string;
-}
+export class CreateEventDTO extends PickType(EventDTO, ['name']) {}

@@ -1,5 +1,11 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { UserDTO } from 'src/user/dto/user.dto';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/users.entity';
 
@@ -15,9 +21,14 @@ export class UserOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const userId = parseInt(req.params.id);
 
-    let ownerId: Promise<User> = this.userService.findOne(userId);
+    const ownerId: Promise<UserDTO> = this.userService.findOne(userId);
 
     return ownerId.then((resp) => {
+      try {
+        resp.id;
+      } catch (e) {
+        throw new NotFoundException(e);
+      }
       return logUserId === resp.id;
     });
   }
