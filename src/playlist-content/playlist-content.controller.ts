@@ -1,16 +1,24 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Body, Controller, UseFilters, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
+import {
+  Crud,
+  CrudAuth,
+  CrudController,
+  CrudRequest,
+  Override,
+  ParsedRequest,
+} from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { PlaylistContentOwnerGuard } from 'src/playlistcontent/guards/playlistContentOwner.guard';
+import { PlaylistContentOwnerGuard } from 'src/playlist-content/guards/playlist-content-owner.guard';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
-import { CreatePlaylistContentDTO } from './dto/createplaylistContent.dto';
-import { PlaylistContentDTO } from './dto/playlistcontent.dto';
-import { ResponsePlaylistContentDTO } from './dto/responseplaylist.dto';
-import { UpdatePlaylistContentDTO } from './dto/update-playlistContent.dto';
-import { PlaylistContent } from './playlistcontent.entity';
-import { PlaylistContentService } from './playlistcontent.service';
+import { CreatePlaylistContentDTO } from './dto/create-playlist-content.dto';
+import { PlaylistContentDTO } from './dto/playlist-content.dto';
+import { ResponsePlaylistContentDTO } from './dto/response-playlist.dto';
+import { UpdatePlaylistContentDTO } from './dto/update-playlist-content.dto';
+import { PlaylistContent } from './playlist-content.entity';
+import { PlaylistContentService } from './playlist-content.service';
+import { GetUser } from '../commons/decorators/get-user';
 
 @Crud({
   model: {
@@ -29,9 +37,6 @@ import { PlaylistContentService } from './playlistcontent.service';
     replace: CreatePlaylistContentDTO,
   },
   routes: {
-    createOneBase: {
-      decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
-    },
     createManyBase: {
       decorators: [UseGuards(JwtAuthGuard)],
     },
@@ -67,4 +72,14 @@ export class PlaylistContentController
   implements CrudController<PlaylistContentDTO>
 {
   constructor(public service: PlaylistContentService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @Override('createOneBase')
+  async createOnePC(
+    @Body() dto: CreatePlaylistContentDTO,
+    @GetUser('id') userId: number,
+  ) {
+    return this.service.createOnePC(dto, userId);
+  }
 }

@@ -6,7 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { Screen } from 'src/screen/screen.entity';
 import { Playlist } from 'src/playlist/playlist.entity';
 import { Content } from 'src/content/content.entity';
-import { PlaylistContent } from 'src/playlistcontent/playlistcontent.entity';
+import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
 
 export default class InitialDatabaseSeed implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {

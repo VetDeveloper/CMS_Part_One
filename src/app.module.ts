@@ -8,7 +8,7 @@ import { ScreenModule } from './screen/screen.module';
 import { Screen } from './screen/screen.entity';
 import { AuthModule } from './auth/auth.module';
 import { PlaylistModule } from './playlist/playlist.module';
-import { PlaylistContentModule } from './playlistcontent/playlistcontent.module';
+import { PlaylistContentModule } from './playlist-content/playlist-content.module';
 import { ContentModule } from './content/content.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';

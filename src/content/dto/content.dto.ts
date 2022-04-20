@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsPositive, IsString, MaxLength } from 'class-validator';
-import { PlaylistContentDTO } from 'src/playlistcontent/dto/playlistcontent.dto';
+import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dto';
 import { UserDTO } from 'src/user/dto/user.dto';
 
 export class ContentDTO {

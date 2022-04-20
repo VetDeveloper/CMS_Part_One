@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PlaylistContentController } from './playlistcontent.controller';
-import { PlaylistContent } from './playlistcontent.entity';
-import { PlaylistContentService } from './playlistcontent.service';
-import { PlaylistContentReposityry } from './playlistcontent.repository';
+import { PlaylistContentController } from './playlist-content.controller';
+import { PlaylistContent } from './playlist-content.entity';
+import { PlaylistContentService } from './playlist-content.service';
+import { PlaylistContentReposityry } from './playlist-content.repository';
 
 @Module({
   controllers: [PlaylistContentController],

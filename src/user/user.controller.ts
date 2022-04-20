@@ -22,10 +22,10 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { UserOwnerGuard } from 'src/user/guards/userOwner.guard';
-import { CreateUserDTO } from './dto/create.user.dto';
-import { ResponseUserDTO } from './dto/response.user.dto';
-import { UpdateUserDTO } from './dto/update.user.dto';
+import { UserOwnerGuard } from 'src/user/guards/user-owner.guard';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { ResponseUserDTO } from './dto/response-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { UserService } from './user.service';
 import { User } from './users.entity';

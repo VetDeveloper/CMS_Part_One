@@ -8,10 +8,10 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { CreateUserDTO } from 'src/user/dto/create.user.dto';
+import { CreateUserDTO } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { LoginUserDTO } from './dto/login.user.dto';
-import { AuthResponse } from './dto/response.auth.dto';
+import { LoginUserDTO } from './dto/login-user.dto';
+import { AuthResponse } from './dto/response-auth.dto';
 
 @ApiTags('Logon and Login')
 @Controller('auth')
