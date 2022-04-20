@@ -21,7 +21,7 @@ export class UserOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const userId = parseInt(req.params.id);
 
-    let ownerId: Promise<UserDTO> = this.userService.findOne(userId);
+    const ownerId: Promise<UserDTO> = this.userService.findOne(userId);
 
     return ownerId.then((resp) => {
       try {

@@ -17,7 +17,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Unique(['playlistId', 'contentId', 'ordinalNumber'])
+@Unique(['playlistId', 'ordinalNumber'])
 export class PlaylistContent {
   @PrimaryGeneratedColumn()
   id: number;

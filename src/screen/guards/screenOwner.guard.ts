@@ -22,7 +22,7 @@ export class ScreenOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const screenId = parseInt(req.params.id);
 
-    let ownerId: Promise<ScreenDTO> = this.screenService.findOne(screenId);
+    const ownerId: Promise<ScreenDTO> = this.screenService.findOne(screenId);
 
     return ownerId.then((resp) => {
       try {

@@ -21,7 +21,7 @@ export class ContentOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const contentId = parseInt(req.params.id);
 
-    let ownerId: Promise<ContentDTO> = this.contentService.findOne(contentId);
+    const ownerId: Promise<ContentDTO> = this.contentService.findOne(contentId);
 
     return ownerId.then((resp) => {
       try {

@@ -21,7 +21,7 @@ export class EventOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const eventId = parseInt(req.params.id);
 
-    let ownerId: Promise<EventDTO> = this.eventService.findOne(eventId);
+    const ownerId: Promise<EventDTO> = this.eventService.findOne(eventId);
 
     return ownerId.then((resp) => {
       try {

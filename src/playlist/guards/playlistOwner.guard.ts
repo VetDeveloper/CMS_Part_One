@@ -21,7 +21,7 @@ export class PlaylistOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const PlaylistId = parseInt(req.params.id);
 
-    let ownerId: Promise<PlaylistDTO> =
+    const ownerId: Promise<PlaylistDTO> =
       this.playlistService.findOne(PlaylistId);
 
     return ownerId.then((resp) => {
