@@ -1,8 +1,8 @@
 module.exports = {
   type: "postgres",
   //url: 'postgres://jzliibea:pNNIq4vKgRzo6BtI6_JJ5dH4y0f8KrTa@balarama.db.elephantsql.com/jzliibea',
-  host: "postgres",
-  //host: "localhost",
+  //host: "postgres",
+  host: "localhost",
   port: 5432,
   username: "postgres",
   password: "sashkamihaylov.",
@@ -10,5 +10,10 @@ module.exports = {
   entities: ['dist/**/*.entity.js'],
   synchronize: true,
   factories: ["dist/**/database/factories/**/*.js"],
-  seeds: ["dist/**/database/seeds/**/*.js"]
+  seeds: ["dist/**/database/seeds/**/*.js"],
+  migrations: ['dist/migrations/*.js'],
+  migrationsTableName: 'migrations',
+  cli: {
+    migrationsDir: 'src/migrations',
+  },
 }

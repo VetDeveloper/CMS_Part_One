@@ -26,10 +26,8 @@ export class Content {
   })
   name: string;
 
-  @Column({
-    type: 'varchar',
-  })
-  link: string;
+  @Column({ type: 'varchar', array: true, default: () => "'[]'" })
+  link: Array<string>;
 
   @CreateDateColumn()
   createdAt: Date;
