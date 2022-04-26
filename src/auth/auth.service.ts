@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -15,14 +16,14 @@ import { LoginUserDTO } from './dto/login-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
+    private usersService: UserService,
     private jwtService: JwtService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.userService.getUserByEmail(email);
+    const user = await this.usersService.getUserByEmail(email);
 
-    if (!user) {
+    if (!user || !pass) {
       throw new UnauthorizedException('Неправильный логин или пароль');
     }
 
@@ -46,7 +47,7 @@ export class AuthService {
   }
 
   async registration(userDto: CreateUserDTO) {
-    const isUserAlreadyExist = await this.userService.getUserByEmail(
+    const isUserAlreadyExist = await this.usersService.getUserByEmail(
       userDto.email,
     );
     if (isUserAlreadyExist) {
@@ -54,7 +55,27 @@ export class AuthService {
         'Пользователь с таким email уже существует',
       );
     }
-    const user = await this.userService.registrateOne(userDto);
+    const user = await this.usersService.registrateOne(userDto);
+    const payload = { email: user.email, id: user.id };
+    return {
+      user: { ...user },
+      access_token: this.jwtService.sign(payload),
+    };
+  }
+
+  async googleLogin(dto) {
+    let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
+
+    if (user) {
+      const payload = { email: user.email, id: user.id };
+      const { password, ...res } = user;
+      return {
+        user: { ...res },
+        access_token: this.jwtService.sign(payload),
+      };
+    }
+
+    user = await this.usersService.registrateOne({ email: dto.email });
     const payload = { email: user.email, id: user.id };
     return {
       user: { ...user },

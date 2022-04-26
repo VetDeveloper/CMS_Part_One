@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsInt,
   IsNumber,
+  IsOptional,
   IsPositive,
   isString,
   IsString,
@@ -28,7 +29,8 @@ export class UserDTO {
 
   @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
   @IsString()
-  password: string;
+  @IsOptional()
+  password?: string;
 
   @ApiProperty({
     example: '2022-03-12 02:14:08.956309',

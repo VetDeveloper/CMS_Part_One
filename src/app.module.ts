@@ -25,6 +25,8 @@ import * as Joi from 'joi';
         DB_PASSWORD: Joi.string().required(),
         DATABASE: Joi.string().required(),
         DB_SYNCHRONIZE: Joi.boolean().default(true),
+        GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

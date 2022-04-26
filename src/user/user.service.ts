@@ -6,6 +6,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { UpdateContentDTO } from 'src/content/dto/update-content.dto';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/create-user.dto';
+import { RegistrateUserDTO } from './dto/registrate-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { UsersRepository } from './user.repository';
@@ -22,7 +23,7 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
     return user;
   }
 
-  async registrateOne(dto: CreateUserDTO): Promise<UserDTO> {
+  async registrateOne(dto: RegistrateUserDTO): Promise<UserDTO> {
     const newUser: UserDTO = await this.repo.create(dto);
     return this.repo.save(newUser);
   }

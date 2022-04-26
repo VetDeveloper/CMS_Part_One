@@ -7,11 +7,9 @@ import { Playlist } from 'src/playlist/playlist.entity';
 import { Screen } from 'src/screen/screen.entity';
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -22,7 +20,7 @@ import * as bcrypt from 'bcryptjs';
 export class User {
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 5);
+    if (this.password) this.password = await bcrypt.hash(this.password, 5);
   }
 
   @PrimaryGeneratedColumn()
@@ -37,9 +35,10 @@ export class User {
 
   @Column({
     type: 'varchar',
+    nullable: true,
   })
   @Exclude()
-  password: string;
+  password?: string;
 
   @CreateDateColumn()
   createdAt: Date;

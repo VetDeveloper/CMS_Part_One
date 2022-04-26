@@ -8,6 +8,7 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .addBearerAuth()
+    .addOAuth2()
     .setTitle('CMS Part 1')
     .setDescription('CMS for content management for screens')
     .setVersion('1.0')

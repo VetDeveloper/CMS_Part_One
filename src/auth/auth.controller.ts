@@ -1,8 +1,17 @@
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Post,
+  UseGuards,
+  Body,
+  Req,
+  Get,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,
   ApiBody,
+  ApiOAuth2,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -46,5 +55,15 @@ export class AuthController {
       await this.authService.registration(userDto),
     );
     return answ;
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth(@Req() req) {}
+
+  @Get('google/redirect')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req) {
+    return await this.authService.googleLogin(req.user);
   }
 }
