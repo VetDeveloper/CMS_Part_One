@@ -37,49 +37,43 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  async login(dto: LoginUserDTO) {
-    const user: UserDTO = await this.validateUser(dto.email, dto.password);
-    const payload = { id: user.id, email: user.email };
+  private getTokenObject(user: UserDTO) {
+    const payload = { email: user.email, id: user.id };
+    const { password, ...res } = user;
     return {
-      user: { ...user },
+      user: { ...res },
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async login(dto: LoginUserDTO) {
+    const user: UserDTO = await this.validateUser(dto.email, dto.password);
+    return this.getTokenObject(user);
   }
 
   async registration(userDto: CreateUserDTO) {
     const isUserAlreadyExist = await this.usersService.getUserByEmail(
       userDto.email,
     );
+
     if (isUserAlreadyExist) {
       throw new BadRequestException(
         'Пользователь с таким email уже существует',
       );
     }
+
     const user = await this.usersService.registrateOne(userDto);
-    const payload = { email: user.email, id: user.id };
-    return {
-      user: { ...user },
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.getTokenObject(user);
   }
 
   async googleLogin(dto) {
     let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
 
     if (user) {
-      const payload = { email: user.email, id: user.id };
-      const { password, ...res } = user;
-      return {
-        user: { ...res },
-        access_token: this.jwtService.sign(payload),
-      };
+      return this.getTokenObject(user);
     }
 
     user = await this.usersService.registrateOne({ email: dto.email });
-    const payload = { email: user.email, id: user.id };
-    return {
-      user: { ...user },
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.getTokenObject(user);
   }
 }

@@ -17,6 +17,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { GetUser } from 'src/commons/decorators/get-user';
 import { CreateUserDTO } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login-user.dto';
@@ -57,13 +58,15 @@ export class AuthController {
     return answ;
   }
 
+  @ApiOperation({ summary: 'Endpoint для входа в приложение через Google' })
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req) {}
 
+  @ApiOperation({ summary: 'Endpoint redirect Google' })
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req) {
-    return await this.authService.googleLogin(req.user);
+  async googleAuthRedirect(@GetUser() user) {
+    return await this.authService.googleLogin(user);
   }
 }
