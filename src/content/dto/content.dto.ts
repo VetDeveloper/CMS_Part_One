@@ -29,11 +29,13 @@ export class ContentDTO {
   name: string;
 
   @ApiProperty({
-    example:
-      '[https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album]',
+    example: [
+      'https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album',
+    ],
     description: 'Мыссив с ссылками на конкретный контент',
   })
   @IsString({ each: true })
+  @IsArray()
   link: Array<string>;
 
   @ApiProperty({
