@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { ContentOwnerGuard } from 'src/content/guards/content-owner.guard';
@@ -11,6 +11,7 @@ import { ContentDTO } from './dto/content.dto';
 import { CreateContentDTO } from './dto/create-content.dto';
 import { ResponseContentDTO } from './dto/response-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
+import { CreateFileDTO } from './dto/create-file.dto';
 
 @Crud({
   model: {
@@ -56,4 +57,9 @@ import { UpdateContentDTO } from './dto/update-content.dto';
 @Controller('contents')
 export class ContentController implements CrudController<ContentDTO> {
   constructor(public service: ContentService) {}
+
+  @Post('url')
+  async getPersistentUrl(@Body() dto: CreateFileDTO) {
+    return this.service.saveFileInCloud(dto);
+  }
 }
