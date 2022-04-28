@@ -1,11 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
+import { ResponseUrlDTO } from './reponse-url.dto';
 
-export class CreateFileDTO {
-  @ApiProperty({
-    example: 'Cat.jpg',
-    description: 'Название файла с расширением',
-  })
-  @IsString()
-  fileName: string;
-}
+export class CreateFileDTO extends PickType(ResponseUrlDTO, ['key']) {}

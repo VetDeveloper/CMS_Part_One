@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { ContentRepository } from './content.repository';
 import { ContentDTO } from './dto/content.dto';
@@ -6,41 +6,85 @@ import { ContentDTO } from './dto/content.dto';
 import { v4 } from 'uuid';
 
 import * as AWS from 'aws-sdk';
+import { GetPersistentUrlDTO } from './dto/get-persistent-url.dto';
+import { ConfigService as CS } from '@nestjs/config';
 import { CreateFileDTO } from './dto/create-file.dto';
+import { ResponseUrlDTO } from './dto/reponse-url.dto';
+import { DeleteFileDTO } from './dto/delete-file.dto';
 
 @Injectable()
 export class ContentService extends TypeOrmCrudService<ContentDTO> {
-  constructor(public repo: ContentRepository) {
+  constructor(public repo: ContentRepository, private configService: CS) {
     super(repo);
   }
 
-  async saveFileInCloud(dto: CreateFileDTO) {
+  async getPersistentUrl(dto: GetPersistentUrlDTO): Promise<ResponseUrlDTO> {
     const hash: string = v4();
     const newKey: string = hash + dto.fileName;
 
-    AWS.config.update({
-      region: 'eu-central-1',
-      accessKeyId: 'YCAJEd2iIB7xJGOvAkmNllJIg',
-      secretAccessKey: 'YCNxZNtXFWUZEM6wDF_ZWLPXYqWBGYYVusRS9DNK',
-    });
-
     const s3 = new AWS.S3({
       endpoint: 'https://storage.yandexcloud.net',
-      region: 'eu-central-1',
-      accessKeyId: 'YCAJEd2iIB7xJGOvAkmNllJIg',
-      secretAccessKey: 'YCNxZNtXFWUZEM6wDF_ZWLPXYqWBGYYVusRS9DNK',
-      signatureVersion: 'v4',
     });
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
-      Bucket: 'file.storage',
+      Bucket: this.configService.get('YANDEX_BUCKET_NAME'),
       Key: newKey,
-      Expires: 600,
+      Expires: this.configService.get('PERSIGNED_URL_EXPIRES_TIME'),
     });
 
     return {
       signedUrl: signedUrl,
       key: newKey,
     };
+  }
+
+  async createOneFile(
+    contentId: number,
+    dto: CreateFileDTO,
+  ): Promise<ContentDTO> {
+    try {
+      const s3 = new AWS.S3({
+        endpoint: 'https://storage.yandexcloud.net',
+      });
+
+      const content: ContentDTO = await this.repo.findOneOrFail(contentId);
+      let links = content.link;
+      links.push(dto.key);
+
+      return await this.repo.save({
+        ...content,
+        link: links,
+      });
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
+  }
+
+  async deleteOneFile(
+    contentId: number,
+    dto: DeleteFileDTO,
+  ): Promise<ContentDTO> {
+    try {
+      const s3 = new AWS.S3({
+        endpoint: 'https://storage.yandexcloud.net',
+      });
+
+      const content: ContentDTO = await this.repo.findOneOrFail(contentId);
+      const links = content.link;
+      const linksUpdated: string[] = links.filter((key) => {
+        return key != dto.key;
+      });
+
+      await s3
+        .deleteObject({
+          Bucket: this.configService.get('YANDEX_BUCKET_NAME'),
+          Key: dto.key,
+        })
+        .promise();
+
+      return await this.repo.save({ ...content, link: linksUpdated });
+    } catch (e) {
+      throw new BadRequestException(e);
+    }
   }
 }

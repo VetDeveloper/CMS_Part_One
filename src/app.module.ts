@@ -27,6 +27,12 @@ import * as Joi from 'joi';
         DB_SYNCHRONIZE: Joi.boolean().default(true),
         GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
         GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
+        YANDEX_CLOUD_REGION: Joi.string().default('eu-central-1'),
+        YANDEX_SIGNATURE_VERSION: Joi.string().default('v4'),
+        YANDEX_ACCESS_KEY_ID: Joi.string().required(),
+        YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
+        YANDEX_BUCKET_NAME: Joi.string().required(),
+        PERSIGNED_URL_EXPIRES_TIME: Joi.number().default(600),
       }),
     }),
     TypeOrmModule.forRootAsync({
