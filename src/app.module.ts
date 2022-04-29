@@ -36,6 +36,8 @@ import * as Joi from 'joi';
         AWS_SDK_ENDPOINT_NAME: Joi.string().default(
           'https://storage.yandexcloud.net',
         ),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().default(6000),
       }),
     }),
     TypeOrmModule.forRootAsync({

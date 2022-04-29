@@ -14,7 +14,7 @@ import { User } from './users.entity';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserDTO> {
-  constructor(public repo: UsersRepository, @Inject(REQUEST) private req) {
+  constructor(public repo: UsersRepository) {
     super(repo);
   }
 
@@ -26,6 +26,10 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
   async registrateOne(dto: RegistrateUserDTO): Promise<UserDTO> {
     const newUser: UserDTO = await this.repo.create(dto);
     return this.repo.save(newUser);
+  }
+
+  async saveOne(dto: RegistrateUserDTO): Promise<UserDTO> {
+    return this.repo.save(dto);
   }
 
   async updateOneUser(dto: UpdateUserDTO, id: number) {

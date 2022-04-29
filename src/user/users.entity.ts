@@ -46,6 +46,13 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  @Exclude()
+  currentHashedRefreshToken?: string;
+
   @OneToMany(() => Event, (ev) => ev.user)
   events?: Event[];
 

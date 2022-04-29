@@ -21,7 +21,9 @@ import { GetUser } from 'src/commons/decorators/get-user';
 import { CreateUserDTO } from 'src/user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDTO } from './dto/login-user.dto';
+import { RefreshDTO } from './dto/refresh.dto';
 import { AuthResponse } from './dto/response-auth.dto';
+import { JwtAuthGuard } from './guards/jwt.auth.guard';
 
 @ApiTags('Logon and Login')
 @Controller('auth')
@@ -68,5 +70,13 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@GetUser() user) {
     return await this.authService.googleLogin(user);
+  }
+
+  @ApiOperation({ summary: 'Получить access token по refresh token' })
+  @ApiResponse({ status: 201, type: AuthResponse })
+  @ApiBody({ type: RefreshDTO })
+  @Post('refresh')
+  async refresh(@Body() refreshToken: RefreshDTO) {
+    return await this.authService.getAccessTokenByRefreshToken(refreshToken.refresh_token);
   }
 }

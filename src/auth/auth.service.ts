@@ -12,12 +12,16 @@ import { User } from 'src/user/users.entity';
 import * as bcrypt from 'bcryptjs';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from './dto/token-payload.dto';
+import jwt_decode from 'jwt-decode';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
+    private configService: ConfigService
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -37,12 +41,24 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  private getTokenObject(user: UserDTO) {
+  private async getTokenObject(user: UserDTO) {
     const payload = { email: user.email, id: user.id };
-    const { password, ...res } = user;
+    const refreshToken = this.jwtService.sign(payload, {
+        secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+        expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+      });
+
+    const hashToken = await bcrypt.hash(refreshToken, 5);
+    
+    this.usersService.saveOne({
+      ...user,
+      currentHashedRefreshToken: hashToken,
+    });
+    const { currentHashedRefreshToken, password, ...res } = user;
     return {
       user: { ...res },
       access_token: this.jwtService.sign(payload),
+      refresh_token: refreshToken,
     };
   }
 
@@ -76,4 +92,26 @@ export class AuthService {
     user = await this.usersService.registrateOne({ email: dto.email });
     return this.getTokenObject(user);
   }
+
+  async getAccessTokenByRefreshToken(refreshToken: string) {
+    const decoded = jwt_decode(refreshToken) as TokenPayload;
+
+    if (!decoded) {
+      throw new Error();
+    }
+
+    const user: UserDTO = await this.usersService.getUserByEmail(decoded.email);
+    const isRefreshTokenMatching = await bcrypt.compare(
+      refreshToken,
+      user.currentHashedRefreshToken,
+    );
+
+    if(!isRefreshTokenMatching) {
+      throw new BadRequestException('Некорректный refresh token');
+    }
+    
+    return await this.getTokenObject(user);
+
+  }
+
 }

@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   IsEmail,
   IsInt,
@@ -43,6 +44,10 @@ export class UserDTO {
     description: 'Дата обновления пользователя',
   })
   updatedAt: Date;
+
+  @IsOptional()
+  @Exclude() ////////////////////////////////////////////////////////////
+  currentHashedRefreshToken?: string;
 
   events?: EventDTO[];
 
