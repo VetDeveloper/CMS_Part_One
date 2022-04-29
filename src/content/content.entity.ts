@@ -1,4 +1,5 @@
 import {
+  BeforeRemove,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,10 +11,33 @@ import {
 } from 'typeorm';
 import { User } from 'src/user/users.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
+import * as AWS from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
+import { Inject } from '@nestjs/common';
 import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Content {
+
+  @BeforeRemove()
+  async removeAllFiles() {
+    const configService: ConfigService = new ConfigService();
+    const s3 = new AWS.S3({
+      endpoint: configService.get('AWS_SDK_ENDPOINT_NAME'),
+    });
+    const bucketName: string = configService.get('YANDEX_BUCKET_NAME');
+    const keys: string[] = this.link; 
+
+    for (const number in keys) {
+      await s3
+        .deleteObject({
+          Bucket: bucketName,
+          Key: keys[number],
+        })
+        .promise();
+    }
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

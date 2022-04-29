@@ -1,4 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   IsArray,
   IsInt,
@@ -10,6 +12,7 @@ import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dt
 import { UserDTO } from 'src/user/dto/user.dto';
 
 export class ContentDTO {
+
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @IsInt()
   @IsPositive()

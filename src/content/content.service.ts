@@ -23,7 +23,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
     const newKey: string = hash + dto.fileName;
 
     const s3 = new AWS.S3({
-      endpoint: 'https://storage.yandexcloud.net',
+      endpoint: this.configService.get('AWS_SDK_ENDPOINT_NAME'),
     });
 
     const signedUrl = await s3.getSignedUrlPromise('putObject', {
@@ -44,7 +44,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
   ): Promise<ContentDTO> {
     try {
       const s3 = new AWS.S3({
-        endpoint: 'https://storage.yandexcloud.net',
+        endpoint: this.configService.get('AWS_SDK_ENDPOINT_NAME'),
       });
 
       const content: ContentDTO = await this.repo.findOneOrFail(contentId);
@@ -66,7 +66,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
   ): Promise<ContentDTO> {
     try {
       const s3 = new AWS.S3({
-        endpoint: 'https://storage.yandexcloud.net',
+        endpoint: this.configService.get('AWS_SDK_ENDPOINT_NAME'),
       });
 
       const content: ContentDTO = await this.repo.findOneOrFail(contentId);

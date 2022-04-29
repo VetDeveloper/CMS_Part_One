@@ -33,6 +33,9 @@ import * as Joi from 'joi';
         YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
         YANDEX_BUCKET_NAME: Joi.string().required(),
         PERSIGNED_URL_EXPIRES_TIME: Joi.number().default(600),
+        AWS_SDK_ENDPOINT_NAME: Joi.string().default(
+          'https://storage.yandexcloud.net',
+        ),
       }),
     }),
     TypeOrmModule.forRootAsync({
