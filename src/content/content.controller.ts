@@ -47,6 +47,7 @@ import { DeleteFileDTO } from './dto/delete-file.dto';
     replace: CreateContentDTO,
   },
   routes: {
+    //exclude: ['updateOneBase'],
     createOneBase: {
       decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
     },

@@ -15,13 +15,14 @@ import { LoginUserDTO } from './dto/login-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './dto/token-payload.dto';
 import jwt_decode from 'jwt-decode';
+import { AuthResponse } from './dto/response-auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -41,33 +42,31 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  private async getTokenObject(user: UserDTO) {
-    const payload = { email: user.email, id: user.id };
+  private async getTokenObject(user: UserDTO): Promise<AuthResponse> {
+    const payload: TokenPayload = { email: user.email, id: user.id };
     const refreshToken = this.jwtService.sign(payload, {
-        secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
-        expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
-      });
+      secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
+    });
 
-    const hashToken = await bcrypt.hash(refreshToken, 5);
-    
     this.usersService.saveOne({
       ...user,
-      currentHashedRefreshToken: hashToken,
+      currentHashedRefreshToken: refreshToken,
     });
-    const { currentHashedRefreshToken, password, ...res } = user;
+
     return {
-      user: { ...res },
+      user: user,
       access_token: this.jwtService.sign(payload),
       refresh_token: refreshToken,
     };
   }
 
-  async login(dto: LoginUserDTO) {
+  async login(dto: LoginUserDTO): Promise<AuthResponse> {
     const user: UserDTO = await this.validateUser(dto.email, dto.password);
     return this.getTokenObject(user);
   }
 
-  async registration(userDto: CreateUserDTO) {
+  async registration(userDto: CreateUserDTO): Promise<AuthResponse> {
     const isUserAlreadyExist = await this.usersService.getUserByEmail(
       userDto.email,
     );
@@ -82,7 +81,7 @@ export class AuthService {
     return this.getTokenObject(user);
   }
 
-  async googleLogin(dto) {
+  async googleLogin(dto): Promise<AuthResponse> {
     let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
 
     if (user) {
@@ -93,25 +92,24 @@ export class AuthService {
     return this.getTokenObject(user);
   }
 
-  async getAccessTokenByRefreshToken(refreshToken: string) {
+  async getAccessTokenByRefreshToken(
+    refreshToken: string,
+  ): Promise<AuthResponse> {
     const decoded = jwt_decode(refreshToken) as TokenPayload;
 
     if (!decoded) {
-      throw new Error();
+      throw new BadRequestException('Неправильный refresh token');
     }
 
     const user: UserDTO = await this.usersService.getUserByEmail(decoded.email);
-    const isRefreshTokenMatching = await bcrypt.compare(
-      refreshToken,
-      user.currentHashedRefreshToken,
-    );
 
-    if(!isRefreshTokenMatching) {
+    const isRefreshTokenMatching =
+      refreshToken === user.currentHashedRefreshToken;
+
+    if (!isRefreshTokenMatching) {
       throw new BadRequestException('Некорректный refresh token');
     }
-    
+
     return await this.getTokenObject(user);
-
   }
-
 }

@@ -22,7 +22,13 @@ import { PlaylistService } from './playlist.service';
     replace: ResponsePlaylistDTO,
   },
   routes: {
-    exclude: ['createOneBase', 'createManyBase', 'deleteOneBase'],
+    exclude: [
+      'createOneBase',
+      'createManyBase',
+      'deleteOneBase',
+      'updateOneBase',
+      'replaceOneBase',
+    ],
     updateOneBase: {
       decorators: [
         UseGuards(JwtAuthGuard, PlaylistOwnerGuard),

@@ -69,7 +69,8 @@ export class AuthController {
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@GetUser() user) {
-    return await this.authService.googleLogin(user);
+    const answ = AuthResponse.create(await this.authService.googleLogin(user));
+    return answ;
   }
 
   @ApiOperation({ summary: 'Получить access token по refresh token' })
@@ -77,6 +78,9 @@ export class AuthController {
   @ApiBody({ type: RefreshDTO })
   @Post('refresh')
   async refresh(@Body() refreshToken: RefreshDTO) {
-    return await this.authService.getAccessTokenByRefreshToken(refreshToken.refresh_token);
+    const answ = AuthResponse.create(
+      await this.authService.getAccessTokenByRefreshToken(refreshToken.refresh_token)
+    );
+    return answ;
   }
 }

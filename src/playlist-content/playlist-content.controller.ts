@@ -19,6 +19,7 @@ import { UpdatePlaylistContentDTO } from './dto/update-playlist-content.dto';
 import { PlaylistContent } from './playlist-content.entity';
 import { PlaylistContentService } from './playlist-content.service';
 import { GetUser } from '../commons/decorators/get-user';
+import { UpdateGuard } from './guards/can-update.guard';
 
 @Crud({
   model: {
@@ -42,7 +43,7 @@ import { GetUser } from '../commons/decorators/get-user';
     },
     updateOneBase: {
       decorators: [
-        UseGuards(JwtAuthGuard, PlaylistContentOwnerGuard),
+        UseGuards(JwtAuthGuard, PlaylistContentOwnerGuard, UpdateGuard),
         ApiBearerAuth(),
       ],
     },
