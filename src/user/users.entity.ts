@@ -38,7 +38,7 @@ export class User {
     nullable: true,
   })
   @Exclude()
-  password?: string;
+  password: string | null;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -51,7 +51,7 @@ export class User {
     nullable: true,
   })
   @Exclude()
-  currentHashedRefreshToken?: string;
+  currentHashedRefreshToken: string | null;
 
   @OneToMany(() => Event, (ev) => ev.user)
   events?: Event[];

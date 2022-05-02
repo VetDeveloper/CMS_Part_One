@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './dto/token-payload.dto';
 import jwt_decode from 'jwt-decode';
 import { AuthResponse } from './dto/response-auth.dto';
+import { DecodedObject } from './dto/decoded-object.type';
 
 @Injectable()
 export class AuthService {
@@ -42,8 +43,32 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  private async getTokenObject(user: UserDTO): Promise<AuthResponse> {
+  private getTokenObject(user: UserDTO): AuthResponse {
     const payload: TokenPayload = { email: user.email, id: user.id };
+
+    if (user.currentHashedRefreshToken !== null) {
+      const token: DecodedObject = this.jwtService.decode(
+        user.currentHashedRefreshToken,
+      ) as DecodedObject;
+
+      if (Date.now() >= token.exp * 1000) {
+        return this.getTokenObjectWithSave(user, payload);
+      }
+
+      return {
+        user: user,
+        access_token: this.jwtService.sign(payload),
+        refresh_token: user.currentHashedRefreshToken,
+      };
+    }
+
+   return this.getTokenObjectWithSave(user, payload);
+  }
+
+  private getTokenObjectWithSave(
+    user: UserDTO,
+    payload: TokenPayload,
+  ): AuthResponse {
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
@@ -77,7 +102,10 @@ export class AuthService {
       );
     }
 
-    const user = await this.usersService.registrateOne(userDto);
+    const user = await this.usersService.registrateOne({
+      ...userDto,
+      currentHashedRefreshToken: null,
+    });
     return this.getTokenObject(user);
   }
 
@@ -88,7 +116,11 @@ export class AuthService {
       return this.getTokenObject(user);
     }
 
-    user = await this.usersService.registrateOne({ email: dto.email });
+    user = await this.usersService.registrateOne({
+      email: dto.email,
+      password: null,
+      currentHashedRefreshToken: null,
+    });
     return this.getTokenObject(user);
   }
 
@@ -110,6 +142,6 @@ export class AuthService {
       throw new BadRequestException('Некорректный refresh token');
     }
 
-    return await this.getTokenObject(user);
+    return this.getTokenObject(user);
   }
 }
