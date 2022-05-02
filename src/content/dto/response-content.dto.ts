@@ -3,7 +3,7 @@ import { ContentDTO } from './content.dto';
 
 export class ResponseContentDTO extends PickType(ContentDTO, [
   'id',
-  'link',
+  'keys',
   'name',
   'userId',
   'createdAt',

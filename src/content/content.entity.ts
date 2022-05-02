@@ -18,7 +18,6 @@ import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Content {
-
   @BeforeRemove()
   async removeAllFiles() {
     const configService: ConfigService = new ConfigService();
@@ -26,7 +25,7 @@ export class Content {
       endpoint: configService.get('AWS_SDK_ENDPOINT_NAME'),
     });
     const bucketName: string = configService.get('YANDEX_BUCKET_NAME');
-    const keys: string[] = this.link; 
+    const keys: string[] = this.keys;
 
     for (const number in keys) {
       await s3
@@ -50,8 +49,8 @@ export class Content {
   })
   name: string;
 
-  @Column({ type: 'varchar', array: true, default: () => "'[]'" })
-  link: Array<string>;
+  @Column({ type: 'varchar', array: true, default: () => "'{}'" })
+  keys: Array<string>;
 
   @CreateDateColumn()
   createdAt: Date;

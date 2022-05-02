@@ -48,12 +48,12 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
       });
 
       const content: ContentDTO = await this.repo.findOneOrFail(contentId);
-      let links = content.link;
-      links.push(dto.key);
+      let keys = content.keys;
+      keys.push(dto.key);
 
       return await this.repo.save({
         ...content,
-        link: links,
+        keys: keys,
       });
     } catch (e) {
       throw new BadRequestException(e);
@@ -70,8 +70,8 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
       });
 
       const content: ContentDTO = await this.repo.findOneOrFail(contentId);
-      const links = content.link;
-      const linksUpdated: string[] = links.filter((key) => {
+      const keys = content.keys;
+      const keysUpdated: string[] = keys.filter((key) => {
         return key != dto.key;
       });
 
@@ -82,7 +82,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
         })
         .promise();
 
-      return await this.repo.save({ ...content, link: linksUpdated });
+      return await this.repo.save({ ...content, keys: keysUpdated });
     } catch (e) {
       throw new BadRequestException(e);
     }

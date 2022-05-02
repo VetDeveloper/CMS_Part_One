@@ -39,7 +39,7 @@ export class ContentDTO {
   })
   @IsString({ each: true })
   @IsArray()
-  link: Array<string>;
+  keys: Array<string>;
 
   @ApiProperty({
     example: '2022-03-12 02:14:08.956309',
