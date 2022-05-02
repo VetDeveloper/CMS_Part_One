@@ -33,7 +33,7 @@ export class ContentDTO {
 
   @ApiProperty({
     example: [
-      'c850332d0267bTMrh9k4U2g.jpg',
+      'cf850332d0267bTMrh9k4U2g.jpg', 
     ],
     description: 'Массив с ключами файлов на облаке',
   })
