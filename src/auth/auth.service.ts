@@ -95,7 +95,7 @@ export class AuthService {
   async getAccessTokenByRefreshToken(
     refreshToken: string,
   ): Promise<AuthResponse> {
-    const decoded = jwt_decode(refreshToken) as TokenPayload;
+    const decoded: TokenPayload = jwt_decode(refreshToken);
 
     if (!decoded) {
       throw new BadRequestException('Неправильный refresh token');
