@@ -33,9 +33,9 @@ export class ContentDTO {
 
   @ApiProperty({
     example: [
-      'https://sun9-58.userapi.com/impf/c850332/d0267/bTMrh9k4U2g.jpg?size=640x800&type=album',
+      'c850332d0267bTMrh9k4U2g.jpg',
     ],
-    description: 'Мыссив с ссылками на конкретный контент',
+    description: 'Массив с ключами файлов на облаке',
   })
   @IsString({ each: true })
   @IsArray()
