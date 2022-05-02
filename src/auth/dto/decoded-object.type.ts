@@ -1,4 +1,4 @@
 export type DecodedObject = {
-  iat: number;
+  iat: number; 
   exp: number;
 };
