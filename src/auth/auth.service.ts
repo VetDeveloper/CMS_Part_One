@@ -122,10 +122,14 @@ export class AuthService {
     refreshToken: string,
     device: string
   ): Promise<AuthResponse> {
-    const decoded: TokenPayload = jwt_decode(refreshToken);
+    const decoded: TokenPayload & DecodedObject = jwt_decode(refreshToken);
 
     if (!decoded) {
       throw new BadRequestException('Неправильный refresh token');
+    }
+
+    if (Date.now() >= decoded.exp * 1000) {
+      throw new BadRequestException('Истек срок действия refresh token');
     }
 
     const user: UserDTO = await this.usersService.getUserByEmail(decoded.email);
