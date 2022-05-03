@@ -17,6 +17,8 @@ import { TokenPayload } from './dto/token-payload.dto';
 import jwt_decode from 'jwt-decode';
 import { AuthResponse } from './dto/response-auth.dto';
 import { DecodedObject } from './dto/decoded-object.type';
+import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
+import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +26,7 @@ export class AuthService {
     private usersService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private refreshTokenService: RefreshTokenService
   ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
@@ -43,41 +46,33 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  private getTokenObject(user: UserDTO): AuthResponse {
+  private async getTokenObject(user: UserDTO, device: string): Promise<AuthResponse> {
     const payload: TokenPayload = { email: user.email, id: user.id };
 
-    if (user.currentHashedRefreshToken !== null) {
-      const token: DecodedObject = this.jwtService.decode(
-        user.currentHashedRefreshToken,
-      ) as DecodedObject;
-
-      if (Date.now() >= token.exp * 1000) {
-        return this.getTokenObjectWithSave(user, payload);
-      }
-
-      return {
-        user: user,
-        access_token: this.jwtService.sign(payload),
-        refresh_token: user.currentHashedRefreshToken,
-      };
-    }
-
-   return this.getTokenObjectWithSave(user, payload);
-  }
-
-  private getTokenObjectWithSave(
-    user: UserDTO,
-    payload: TokenPayload,
-  ): AuthResponse {
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),
       expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
     });
 
-    this.usersService.saveOne({
-      ...user,
-      currentHashedRefreshToken: refreshToken,
-    });
+    const alreadyExist : RefreshToken = await this.refreshTokenService.findOne(
+      {
+        where:{
+          userId: user.id,
+          device: device
+        }
+      })
+
+    if (alreadyExist) {
+      this.refreshTokenService.updateRefreshToken(alreadyExist.id, {
+        refreshToken: refreshToken
+      });
+    } else {
+      this.refreshTokenService.saveRefreshToken({
+        userId: user.id,
+        device: device,
+        refreshToken: refreshToken,
+      });
+    }
 
     return {
       user: user,
@@ -88,7 +83,7 @@ export class AuthService {
 
   async login(dto: LoginUserDTO): Promise<AuthResponse> {
     const user: UserDTO = await this.validateUser(dto.email, dto.password);
-    return this.getTokenObject(user);
+    return this.getTokenObject(user, dto.device);
   }
 
   async registration(userDto: CreateUserDTO): Promise<AuthResponse> {
@@ -103,29 +98,29 @@ export class AuthService {
     }
 
     const user = await this.usersService.registrateOne({
-      ...userDto,
-      currentHashedRefreshToken: null,
+      ...userDto
     });
-    return this.getTokenObject(user);
+    return this.getTokenObject(user, userDto.device);
   }
 
   async googleLogin(dto): Promise<AuthResponse> {
+    const device: string = 'google'
     let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
 
     if (user) {
-      return this.getTokenObject(user);
+      return this.getTokenObject(user, device);
     }
 
     user = await this.usersService.registrateOne({
       email: dto.email,
       password: null,
-      currentHashedRefreshToken: null,
     });
-    return this.getTokenObject(user);
+    return this.getTokenObject(user, device);
   }
 
   async getAccessTokenByRefreshToken(
     refreshToken: string,
+    device: string
   ): Promise<AuthResponse> {
     const decoded: TokenPayload = jwt_decode(refreshToken);
 
@@ -135,13 +130,23 @@ export class AuthService {
 
     const user: UserDTO = await this.usersService.getUserByEmail(decoded.email);
 
-    const isRefreshTokenMatching =
-      refreshToken === user.currentHashedRefreshToken;
+    const refToken: RefreshToken = await this.refreshTokenService.findOne({
+      where: {
+        userId: decoded.id,
+        device: device,
+      },
+    });
+
+    if(!refToken) {
+      throw new BadRequestException()
+    }
+
+    const isRefreshTokenMatching = refreshToken === refToken.refreshToken;
 
     if (!isRefreshTokenMatching) {
       throw new BadRequestException('Некорректный refresh token');
     }
 
-    return this.getTokenObject(user);
+    return this.getTokenObject(user, device);
   }
 }

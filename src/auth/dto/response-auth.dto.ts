@@ -4,7 +4,7 @@ import { UserDTO } from 'src/user/dto/user.dto';
 
 export class AuthResponse {
   private constructor(user: UserDTO, access_token: string, refresh_token: string) {
-    const {currentHashedRefreshToken, password, ...result } = user;
+    const { password, ...result } = user;
     this.user = result;
     this.access_token = access_token;
     this.refresh_token = refresh_token;

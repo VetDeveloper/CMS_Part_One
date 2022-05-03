@@ -15,6 +15,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
 
 @Entity()
 export class User {
@@ -46,12 +47,12 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-  })
-  @Exclude()
-  currentHashedRefreshToken: string | null;
+  // @Column({
+  //   type: 'varchar',
+  //   nullable: true,
+  // })
+  // @Exclude()
+  // currentHashedRefreshToken: string | null;
 
   @OneToMany(() => Event, (ev) => ev.user)
   events?: Event[];
@@ -70,4 +71,7 @@ export class User {
     (playlistContent) => playlistContent.playlist,
   )
   playlistContents?: PlaylistContent[];
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens?: RefreshToken[];
 }

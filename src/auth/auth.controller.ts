@@ -79,7 +79,7 @@ export class AuthController {
   @Post('refresh')
   async refresh(@Body() refreshToken: RefreshDTO) {
     const answ = AuthResponse.create(
-      await this.authService.getAccessTokenByRefreshToken(refreshToken.refresh_token)
+      await this.authService.getAccessTokenByRefreshToken(refreshToken.refresh_token, refreshToken.device)
     );
     return answ;
   }

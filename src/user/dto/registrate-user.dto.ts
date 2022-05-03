@@ -5,5 +5,4 @@ import { UserDTO } from './user.dto';
 export class RegistrateUserDTO extends PickType(UserDTO, [
   'email',
   'password',
-  'currentHashedRefreshToken',
 ] as const) {}
