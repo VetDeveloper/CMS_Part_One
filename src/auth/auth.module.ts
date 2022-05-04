@@ -6,11 +6,13 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import * as Joi from 'joi';
+import { GoogleStrategy } from './strategy/google-strategy';
+import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
 
 @Module({
   imports: [
     UserModule,
+    RefreshTokenModule,
     PassportModule,
     ConfigModule,
     JwtModule.registerAsync({
@@ -24,7 +26,7 @@ import * as Joi from 'joi';
       }),
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy],
   controllers: [AuthController],
   exports: [JwtModule],
 })

@@ -1,19 +1,14 @@
-import { ExecutionContext, Inject, Injectable } from '@nestjs/common';
-import { REQUEST } from '@nestjs/core';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CrudRequest } from '@nestjsx/crud';
+import { Injectable } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { UpdateContentDTO } from 'src/content/dto/update-content.dto';
-import { Repository } from 'typeorm';
-import { CreateUserDTO } from './dto/create-user.dto';
+import { RegistrateUserDTO } from './dto/registrate-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { UserDTO } from './dto/user.dto';
 import { UsersRepository } from './user.repository';
-import { User } from './users.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserDTO> {
-  constructor(public repo: UsersRepository, @Inject(REQUEST) private req) {
+  constructor(public repo: UsersRepository) {
     super(repo);
   }
 
@@ -22,14 +17,23 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
     return user;
   }
 
-  async registrateOne(dto: CreateUserDTO): Promise<UserDTO> {
+  async registrateOne(dto: RegistrateUserDTO): Promise<UserDTO> {
     const newUser: UserDTO = await this.repo.create(dto);
     return this.repo.save(newUser);
   }
 
+  async saveOne(dto: RegistrateUserDTO): Promise<UserDTO> {
+    return this.repo.save(dto);
+  }
+
   async updateOneUser(dto: UpdateUserDTO, id: number) {
     const user: UserDTO = await this.repo.findOneOrFail(id);
-    const newUser = await this.repo.create({ ...user, ...dto });
+
+    const newUser = this.repo.create({
+      ...user,
+      ...dto,
+    });
+    dto.password? newUser.password = await bcrypt.hash(dto.password, 5) : newUser.password
     return await this.repo.save(newUser);
   }
 }

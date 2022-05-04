@@ -1,4 +1,5 @@
 import {
+  BeforeRemove,
   Column,
   CreateDateColumn,
   Entity,
@@ -10,10 +11,38 @@ import {
 } from 'typeorm';
 import { User } from 'src/user/users.entity';
 import { PlaylistContent } from 'src/playlist-content/playlist-content.entity';
+import * as AWS from 'aws-sdk';
+import { ConfigService } from '@nestjs/config';
+import { Inject } from '@nestjs/common';
 import { Exclude } from 'class-transformer';
+import { FileObject } from 'src/file-object/file-object.entity';
+import { ContentRepository } from './content.repository';
+import { ContentService } from './content.service';
 
 @Entity()
 export class Content {
+  @BeforeRemove()
+  async removeAllFiles() {
+    const configService: ConfigService = new ConfigService();
+    const s3 = new AWS.S3({
+      endpoint: configService.get('AWS_SDK_ENDPOINT_NAME'),
+    });
+    const bucketName: string = configService.get('YANDEX_BUCKET_NAME');
+
+    const files: FileObject[] = this.files
+
+    console.log(files)
+
+    for (const file of this.files) {
+      await s3
+        .deleteObject({
+          Bucket: bucketName,
+          Key: file.key,
+        })
+        .promise();
+    }
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -26,10 +55,8 @@ export class Content {
   })
   name: string;
 
-  @Column({
-    type: 'varchar',
-  })
-  link: string;
+  // @Column({ type: 'varchar', array: true, default: () => "'{}'" })
+  // keys: Array<string>;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -48,4 +75,7 @@ export class Content {
     (playlistContent) => playlistContent.playlist,
   )
   playlistContents?: PlaylistContent[];
+
+  @OneToMany(() => FileObject, (fileObj) => fileObj.content)
+  files?: FileObject[];
 }

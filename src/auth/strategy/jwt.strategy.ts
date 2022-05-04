@@ -1,11 +1,15 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { TokenPayload } from '../dto/token-payload.dto';
+import { UserDTO } from 'src/user/dto/user.dto';
+import { UserService } from 'src/user/user.service';
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private confService: ConfigService) {
+  constructor(private confService: ConfigService, private usersService: UserService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -13,7 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
-    return { id: payload.id, email: payload.email };
+  async validate(payload: any): Promise<TokenPayload> {
+    const user: UserDTO = await this.usersService.findOne(payload.id);
+    if (!user || payload.email !== user.email) {
+      throw new UnauthorizedException('Bad jwt token');
+    }
+    return { id: user.id, email: user.email };
   }
 }

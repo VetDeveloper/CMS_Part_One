@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   IsEmail,
   IsInt,
   IsNumber,
+  IsOptional,
   IsPositive,
   isString,
   IsString,
@@ -11,6 +13,7 @@ import { ContentDTO } from 'src/content/dto/content.dto';
 import { EventDTO } from 'src/event/dto/event.dto';
 import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dto';
 import { PlaylistDTO } from 'src/playlist/dto/playlist.dto';
+import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
 import { ScreenDTO } from 'src/screen/dto/screen.dto';
 
 export class UserDTO {
@@ -28,7 +31,8 @@ export class UserDTO {
 
   @ApiProperty({ example: '123Adwr.', description: 'Пароль' })
   @IsString()
-  password: string;
+  @IsOptional()
+  password: string | null;
 
   @ApiProperty({
     example: '2022-03-12 02:14:08.956309',
@@ -42,6 +46,10 @@ export class UserDTO {
   })
   updatedAt: Date;
 
+  // @IsOptional()
+  // @Exclude()
+  // currentHashedRefreshToken: string | null;
+
   events?: EventDTO[];
 
   screens?: ScreenDTO[];
@@ -51,4 +59,6 @@ export class UserDTO {
   contents?: ContentDTO[];
 
   playlistContents?: PlaylistContentDTO[];
+
+  refreshTokens?: RefreshToken[];
 }

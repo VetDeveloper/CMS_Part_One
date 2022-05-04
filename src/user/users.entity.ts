@@ -7,22 +7,21 @@ import { Playlist } from 'src/playlist/playlist.entity';
 import { Screen } from 'src/screen/screen.entity';
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
 
 @Entity()
 export class User {
   @BeforeInsert()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 5);
+    if (this.password) this.password = await bcrypt.hash(this.password, 5);
   }
 
   @PrimaryGeneratedColumn()
@@ -37,15 +36,23 @@ export class User {
 
   @Column({
     type: 'varchar',
+    nullable: true,
   })
   @Exclude()
-  password: string;
+  password: string | null;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // @Column({
+  //   type: 'varchar',
+  //   nullable: true,
+  // })
+  // @Exclude()
+  // currentHashedRefreshToken: string | null;
 
   @OneToMany(() => Event, (ev) => ev.user)
   events?: Event[];
@@ -64,4 +71,7 @@ export class User {
     (playlistContent) => playlistContent.playlist,
   )
   playlistContents?: PlaylistContent[];
+
+  @OneToMany(() => RefreshToken, (refreshToken) => refreshToken.user)
+  refreshTokens?: RefreshToken[];
 }

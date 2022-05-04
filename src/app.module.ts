@@ -12,6 +12,7 @@ import { PlaylistContentModule } from './playlist-content/playlist-content.modul
 import { ContentModule } from './content/content.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { FileObjectModule } from './file-object/file-object.module';
 
 @Module({
   imports: [
@@ -25,6 +26,19 @@ import * as Joi from 'joi';
         DB_PASSWORD: Joi.string().required(),
         DATABASE: Joi.string().required(),
         DB_SYNCHRONIZE: Joi.boolean().default(true),
+        GOOGLE_AUTH_CLIENT_ID: Joi.string().required(),
+        GOOGLE_AUTH_CLIENT_SECRET: Joi.string().required(),
+        YANDEX_CLOUD_REGION: Joi.string().default('eu-central-1'),
+        YANDEX_SIGNATURE_VERSION: Joi.string().default('v4'),
+        YANDEX_ACCESS_KEY_ID: Joi.string().required(),
+        YANDEX_SECRET_ACCESS_KEY: Joi.string().required(),
+        YANDEX_BUCKET_NAME: Joi.string().required(),
+        PERSIGNED_URL_EXPIRES_TIME: Joi.number().default(600),
+        AWS_SDK_ENDPOINT_NAME: Joi.string().default(
+          'https://storage.yandexcloud.net',
+        ),
+        JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+        JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().default(6000),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -50,6 +64,7 @@ import * as Joi from 'joi';
     PlaylistModule,
     PlaylistContentModule,
     ContentModule,
+    FileObjectModule,
   ],
   controllers: [],
   providers: [],
