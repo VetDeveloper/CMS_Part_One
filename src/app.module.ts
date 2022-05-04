@@ -12,6 +12,7 @@ import { PlaylistContentModule } from './playlist-content/playlist-content.modul
 import { ContentModule } from './content/content.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { FileObjectModule } from './file-object/file-object.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import * as Joi from 'joi';
     PlaylistModule,
     PlaylistContentModule,
     ContentModule,
+    FileObjectModule,
   ],
   controllers: [],
   providers: [],

@@ -9,7 +9,7 @@ define(Content, (faker: typeof Faker) => {
   const link = faker.internet.url();
 
   content.name = name;
-  content.keys = link;
+  //content.keys = link;
 
   return content;
 });

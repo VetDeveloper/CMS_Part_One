@@ -15,6 +15,9 @@ import * as AWS from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { Inject } from '@nestjs/common';
 import { Exclude } from 'class-transformer';
+import { FileObject } from 'src/file-object/file-object.entity';
+import { ContentRepository } from './content.repository';
+import { ContentService } from './content.service';
 
 @Entity()
 export class Content {
@@ -25,13 +28,16 @@ export class Content {
       endpoint: configService.get('AWS_SDK_ENDPOINT_NAME'),
     });
     const bucketName: string = configService.get('YANDEX_BUCKET_NAME');
-    const keys: string[] = this.keys;
 
-    for (const number in keys) {
+    const files: FileObject[] = this.files
+
+    console.log(files)
+
+    for (const file of this.files) {
       await s3
         .deleteObject({
           Bucket: bucketName,
-          Key: keys[number],
+          Key: file.key,
         })
         .promise();
     }
@@ -49,8 +55,8 @@ export class Content {
   })
   name: string;
 
-  @Column({ type: 'varchar', array: true, default: () => "'{}'" })
-  keys: Array<string>;
+  // @Column({ type: 'varchar', array: true, default: () => "'{}'" })
+  // keys: Array<string>;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -69,4 +75,7 @@ export class Content {
     (playlistContent) => playlistContent.playlist,
   )
   playlistContents?: PlaylistContent[];
+
+  @OneToMany(() => FileObject, (fileObj) => fileObj.content)
+  files?: FileObject[];
 }

@@ -29,6 +29,8 @@ import { GetPersistentUrlDTO } from './dto/get-persistent-url.dto';
 import { ResponseUrlDTO } from './dto/reponse-url.dto';
 import { CreateFileDTO } from './dto/create-file.dto';
 import { DeleteFileDTO } from './dto/delete-file.dto';
+import { FileObject } from 'src/file-object/file-object.entity';
+import { ResponseFileObject } from 'src/file-object/dto/response-file-object.dto';
 
 @Crud({
   model: {
@@ -47,7 +49,7 @@ import { DeleteFileDTO } from './dto/delete-file.dto';
     replace: CreateContentDTO,
   },
   routes: {
-    //exclude: ['updateOneBase'],
+    exclude: ['deleteOneBase'],
     createOneBase: {
       decorators: [UseGuards(JwtAuthGuard), ApiBearerAuth()],
     },
@@ -76,6 +78,21 @@ import { DeleteFileDTO } from './dto/delete-file.dto';
 export class ContentController implements CrudController<ContentDTO> {
   constructor(public service: ContentService) {}
 
+  @UseGuards(JwtAuthGuard, ContentOwnerGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Удаление контента',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Контент удален успешно',
+    type: ContentDTO,
+  })
+  @Delete('/:id')
+  async deleteContent(@Param('id') contentId: number) {
+    return this.service.deleteOneContent(contentId);
+  }
+
   @ApiResponse({
     status: 201,
     description: 'URL создан успешно',
@@ -91,7 +108,7 @@ export class ContentController implements CrudController<ContentDTO> {
   }
 
   @ApiOperation({ summary: 'Добавление файла к контенту' })
-  @ApiResponse({ status: 201, type: ContentDTO })
+  @ApiResponse({ status: 201, type: ResponseFileObject })
   @ApiBody({ type: CreateFileDTO })
   @UseGuards(JwtAuthGuard, ContentOwnerGuard)
   @ApiBearerAuth()
