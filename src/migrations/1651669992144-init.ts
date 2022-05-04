@@ -1,15 +1,15 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class init1651494164584 implements MigrationInterface {
-    name = 'init1651494164584'
+export class init1651669992144 implements MigrationInterface {
+    name = 'init1651669992144'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "playlist_content" ("id" SERIAL NOT NULL, "playlistId" integer NOT NULL, "contentId" integer NOT NULL, "userId" integer NOT NULL, "ordinalNumber" integer NOT NULL, "duration" double precision NOT NULL, CONSTRAINT "UQ_ae60dc8225ba46673866e9dd86b" UNIQUE ("playlistId", "ordinalNumber"), CONSTRAINT "PK_b92302a5c24f36383de1a5b96d1" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "playlist" ("id" SERIAL NOT NULL, "screenId" integer NOT NULL, "userId" integer NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "REL_a0c36ea4482e5015ac6f1749ad" UNIQUE ("screenId"), CONSTRAINT "PK_538c2893e2024fabc7ae65ad142" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "screen" ("id" SERIAL NOT NULL, "eventId" integer NOT NULL, "userId" integer NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_7d30806a7556636b84d24e75f4d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "event" ("id" SERIAL NOT NULL, "userId" integer NOT NULL, "name" character varying(40) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_30c2f3bbaf6d34a55f8ae6e4614" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "email" character varying(35) NOT NULL, "password" character varying, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "currentHashedRefreshToken" character varying, CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "content" ("id" SERIAL NOT NULL, "userId" integer NOT NULL, "name" character varying(40) NOT NULL, "link" character varying array NOT NULL DEFAULT '{}', "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_6a2083913f3647b44f205204e36" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "user" ("id" SERIAL NOT NULL, "email" character varying(35) NOT NULL, "password" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "UQ_e12875dfb3b1d92d7d7c5377e22" UNIQUE ("email"), CONSTRAINT "PK_cace4a159ff9f2512dd42373760" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "content" ("id" SERIAL NOT NULL, "userId" integer NOT NULL, "name" character varying(40) NOT NULL, "link" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_6a2083913f3647b44f205204e36" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "playlist_content" ADD CONSTRAINT "FK_51b56d109200832ffe3b0d30cba" FOREIGN KEY ("playlistId") REFERENCES "playlist"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "playlist_content" ADD CONSTRAINT "FK_8b1856cc3bdcc0eeeab150daa59" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "playlist_content" ADD CONSTRAINT "FK_7800b81d78dc785e558ec31f1fe" FOREIGN KEY ("contentId") REFERENCES "content"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
