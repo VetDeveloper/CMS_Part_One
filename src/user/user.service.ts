@@ -12,13 +12,22 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
     super(repo);
   }
 
+  async findOrCreate(email: string): Promise<UserDTO> {
+    const user: UserDTO = await this.getUserByEmail(email);
+    if (user) {
+      return user;
+    }
+    const newUser: UserDTO = this.repo.create({ email: email });
+    return this.repo.save(newUser);
+  }
+
   async getUserByEmail(email: string): Promise<UserDTO> {
-    const user = await this.repo.findOne({ where: { email } });
+    const user = this.repo.findOne({ where: { email } });
     return user;
   }
 
   async registrateOne(dto: RegistrateUserDTO): Promise<UserDTO> {
-    const newUser: UserDTO = await this.repo.create(dto);
+    const newUser: UserDTO = this.repo.create(dto);
     return this.repo.save(newUser);
   }
 
@@ -33,7 +42,9 @@ export class UserService extends TypeOrmCrudService<UserDTO> {
       ...user,
       ...dto,
     });
-    dto.password? newUser.password = await bcrypt.hash(dto.password, 5) : newUser.password
+    dto.password
+      ? (newUser.password = await bcrypt.hash(dto.password, 5))
+      : newUser.password;
     return await this.repo.save(newUser);
   }
 }

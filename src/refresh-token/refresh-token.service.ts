@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { TypeOrmCrudService } from "@nestjsx/crud-typeorm";
-import { RefreshToken } from "./refresh-token.entity";
-import { RefreshTokenReposityry } from "./refresh-token.repository";
+import { Injectable } from '@nestjs/common';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { RefreshToken } from './refresh-token.entity';
+import { RefreshTokenReposityry } from './refresh-token.repository';
 
 @Injectable()
 export class RefreshTokenService extends TypeOrmCrudService<RefreshToken> {
@@ -9,11 +9,11 @@ export class RefreshTokenService extends TypeOrmCrudService<RefreshToken> {
     super(repo);
   }
 
-  async updateRefreshToken(id : number, dto) {
-    return await this.repo.update(id, dto)
+  async updateRefreshToken(id: number, dto) {
+    return this.repo.update(id, dto);
   }
 
   async saveRefreshToken(dto) {
-    return await this.repo.save(dto)
+    return this.repo.save(dto);
   }
 }

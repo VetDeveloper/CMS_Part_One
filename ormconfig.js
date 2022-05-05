@@ -3,7 +3,7 @@ module.exports = {
   //url: 'postgres://jzliibea:pNNIq4vKgRzo6BtI6_JJ5dH4y0f8KrTa@balarama.db.elephantsql.com/jzliibea',
   //host: "postgres",
   host: "localhost",
-  port: 5432,
+  port: 6432,
   username: "postgres",
   password: "sashkamihaylov.",
   database: "purr_2",

@@ -1,5 +1,13 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsIn, IsInt, IsOptional, IsPositive, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
+import { Orientation } from 'src/file-object/types/orientation.enum';
 import { ResponseUrlDTO } from './reponse-url.dto';
 
 export class CreateFileDTO extends PickType(ResponseUrlDTO, ['key']) {
@@ -9,15 +17,24 @@ export class CreateFileDTO extends PickType(ResponseUrlDTO, ['key']) {
   })
   @IsOptional()
   @IsString()
-  @IsIn(['portrait', 'landscape'])
-  orientation: string | null;
+  @IsEnum(Orientation)
+  orientation?: Orientation;
 
   @ApiProperty({
     example: '1080',
-    description: 'Разрешение',
+    description: 'Ширина (пикс)',
   })
   @IsOptional()
   @IsInt()
   @IsPositive()
-  resolution: number | null;
+  width?: number;
+
+  @ApiProperty({
+    example: '720',
+    description: 'Высота (пикс)',
+  })
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  height?: number;
 }

@@ -13,11 +13,11 @@ export class FileObjectService extends TypeOrmCrudService<FileObject> {
     super(repo);
   }
 
-  async saveOneFile(dto: CreateFileDTO & {contentId: number}) {
-    return await this.repo.save(dto);
+  async saveOneFile(dto: CreateFileDTO & { contentId: number }) {
+    return this.repo.save(dto);
   }
 
   async deleteOneFile(dto: DeleteFileDTO) {
-    return await this.repo.delete({key: dto.key})
+    return this.repo.delete({ key: dto.key });
   }
 }

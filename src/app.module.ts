@@ -39,6 +39,7 @@ import { FileObjectModule } from './file-object/file-object.module';
         ),
         JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
         JWT_REFRESH_TOKEN_EXPIRATION_TIME: Joi.number().default(6000),
+        JWT_EXPIRESIN_TIME: Joi.string().default('2h'),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -46,7 +47,7 @@ import { FileObjectModule } from './file-object/file-object.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        port: configService.get('DB_PORT'),
+        port: configService.get<number>('DB_PORT'),
         host: configService.get('DB_HOST'),
         password: configService.get('DB_PASSWORD'),
         username: configService.get('DB_USERNAME'),

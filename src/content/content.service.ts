@@ -40,14 +40,17 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
       relations: ['files'],
     });
 
-    for (const file of content.files) {
-      await s3
-        .deleteObject({
-          Bucket: bucketName,
-          Key: file.key,
-        })
-        .promise();
-    }
+    const fileObjects: FileObject[] = content.files;
+    await Promise.all(
+      fileObjects.map((file) => {
+        return s3
+          .deleteObject({
+            Bucket: bucketName,
+            Key: file.key,
+          })
+          .promise();
+      }),
+    );
     await this.repo.delete(id);
     const { files, ...answ } = content;
     return answ;
@@ -73,10 +76,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
     };
   }
 
-  async createOneFile(
-    contentId: number,
-    dto: CreateFileDTO,
-  ): Promise<ResponseFileObject> {
+  async createOneFile(contentId: number, dto: CreateFileDTO) {
     await this.repo.findOneOrFail(contentId);
     return await this.fileService.saveOneFile({ ...dto, contentId: contentId });
   }
