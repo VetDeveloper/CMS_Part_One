@@ -21,7 +21,7 @@ import { RefreshTokenModule } from 'src/refresh-token/refresh-token.module';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get('SECRET_KEY'),
         signOptions: {
-          expiresIn: '48h',
+          expiresIn: configService.get('JWT_EXPIRESIN_TIME'),
         },
       }),
     }),

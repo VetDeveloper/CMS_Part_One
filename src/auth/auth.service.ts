@@ -13,12 +13,12 @@ import * as bcrypt from 'bcryptjs';
 import { UserDTO } from 'src/user/dto/user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { TokenPayload } from './dto/token-payload.dto';
+import { TokenPayload } from './types/token-payload.type';
 import jwt_decode from 'jwt-decode';
 import { AuthResponse } from './dto/response-auth.dto';
-import { DecodedObject } from './dto/decoded-object.type';
 import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
+import { DecodedObject } from './types/decoded-object.type';
 
 @Injectable()
 export class AuthService {
@@ -26,10 +26,10 @@ export class AuthService {
     private usersService: UserService,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private refreshTokenService: RefreshTokenService
+    private refreshTokenService: RefreshTokenService,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, pass?: string): Promise<any> {
     const user = await this.usersService.getUserByEmail(email);
 
     if (!user || !pass) {
@@ -46,7 +46,10 @@ export class AuthService {
     throw new UnauthorizedException('Неправильный логин или пароль');
   }
 
-  private async getTokenObject(user: UserDTO, device: string): Promise<AuthResponse> {
+  private async getTokenObject(
+    user: UserDTO,
+    device: string,
+  ): Promise<AuthResponse> {
     const payload: TokenPayload = { email: user.email, id: user.id };
 
     const refreshToken = this.jwtService.sign(payload, {
@@ -54,17 +57,16 @@ export class AuthService {
       expiresIn: this.configService.get('JWT_REFRESH_TOKEN_EXPIRATION_TIME'),
     });
 
-    const alreadyExist : RefreshToken = await this.refreshTokenService.findOne(
-      {
-        where:{
-          userId: user.id,
-          device: device
-        }
-      })
+    const alreadyExist: RefreshToken = await this.refreshTokenService.findOne({
+      where: {
+        userId: user.id,
+        device: device,
+      },
+    });
 
     if (alreadyExist) {
       this.refreshTokenService.updateRefreshToken(alreadyExist.id, {
-        refreshToken: refreshToken
+        refreshToken: refreshToken,
       });
     } else {
       this.refreshTokenService.saveRefreshToken({
@@ -98,13 +100,13 @@ export class AuthService {
     }
 
     const user = await this.usersService.registrateOne({
-      ...userDto
+      ...userDto,
     });
     return this.getTokenObject(user, userDto.device);
   }
 
   async googleLogin(dto): Promise<AuthResponse> {
-    const device: string = 'google'
+    const device: string = 'google';
     let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
 
     if (user) {
@@ -120,7 +122,7 @@ export class AuthService {
 
   async getAccessTokenByRefreshToken(
     refreshToken: string,
-    device: string
+    device: string,
   ): Promise<AuthResponse> {
     const decoded: TokenPayload & DecodedObject = jwt_decode(refreshToken);
 
@@ -141,8 +143,8 @@ export class AuthService {
       },
     });
 
-    if(!refToken) {
-      throw new BadRequestException()
+    if (!refToken) {
+      throw new BadRequestException();
     }
 
     const isRefreshTokenMatching = refreshToken === refToken.refreshToken;
