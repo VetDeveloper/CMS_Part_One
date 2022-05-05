@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { ScreenDTO } from './screen.dto';
+import { ScreenModel } from './screen.dto';
 
-export class ResponseScreenDTO extends PickType(ScreenDTO, [
+export class ResponseScreenDTO extends PickType(ScreenModel, [
   'id',
   'userId',
   'eventId',

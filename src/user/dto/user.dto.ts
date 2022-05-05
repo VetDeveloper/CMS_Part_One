@@ -9,14 +9,14 @@ import {
   isString,
   IsString,
 } from 'class-validator';
-import { ContentDTO } from 'src/content/dto/content.dto';
+import { ContentModel } from 'src/content/dto/content.dto';
 import { EventDTO } from 'src/event/dto/event.dto';
-import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dto';
-import { PlaylistDTO } from 'src/playlist/dto/playlist.dto';
+import { PlaylistContentModel } from 'src/playlist-content/dto/playlist-content.dto';
+import { PlaylistModel } from 'src/playlist/dto/playlist.dto';
 import { RefreshToken } from 'src/refresh-token/refresh-token.entity';
-import { ScreenDTO } from 'src/screen/dto/screen.dto';
+import { ScreenModel } from 'src/screen/dto/screen.dto';
 
-export class UserDTO {
+export class UserModel {
   @ApiProperty({
     example: '1',
     description: 'Идентификационный номер пользователя',
@@ -52,13 +52,13 @@ export class UserDTO {
 
   events?: EventDTO[];
 
-  screens?: ScreenDTO[];
+  screens?: ScreenModel[];
 
-  playlists?: PlaylistDTO[];
+  playlists?: PlaylistModel[];
 
-  contents?: ContentDTO[];
+  contents?: ContentModel[];
 
-  playlistContents?: PlaylistContentDTO[];
+  playlistContents?: PlaylistContentModel[];
 
   refreshTokens?: RefreshToken[];
 }

@@ -10,10 +10,10 @@ import {
 } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { PlaylistContentOwnerGuard } from 'src/playlist-content/guards/playlist-content-owner.guard';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
 import { CreatePlaylistContentDTO } from './dto/create-playlist-content.dto';
-import { PlaylistContentDTO } from './dto/playlist-content.dto';
+import { PlaylistContentModel } from './dto/playlist-content.dto';
 import { ResponsePlaylistContentDTO } from './dto/response-playlist.dto';
 import { UpdatePlaylistContentDTO } from './dto/update-playlist-content.dto';
 import { PlaylistContent } from './playlist-content.entity';
@@ -23,7 +23,7 @@ import { UpdateGuard } from './guards/can-update.guard';
 
 @Crud({
   model: {
-    type: PlaylistContentDTO,
+    type: PlaylistContentModel,
   },
   serialize: {
     update: ResponsePlaylistContentDTO,
@@ -63,14 +63,14 @@ import { UpdateGuard } from './guards/can-update.guard';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: UserDTO) => ({
+  persist: (user: UserModel) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('PlaylistContent')
 @Controller('playlist-contents')
 export class PlaylistContentController
-  implements CrudController<PlaylistContentDTO>
+  implements CrudController<PlaylistContentModel>
 {
   constructor(public service: PlaylistContentService) {}
 

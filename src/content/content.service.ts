@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { ContentRepository } from './content.repository';
-import { ContentDTO } from './dto/content.dto';
+import { ContentModel } from './dto/content.dto';
 
 import { v4 } from 'uuid';
 
@@ -21,7 +21,7 @@ import { Content } from './content.entity';
 import { ResponseFileObject } from 'src/file-object/dto/response-file-object.dto';
 
 @Injectable()
-export class ContentService extends TypeOrmCrudService<ContentDTO> {
+export class ContentService extends TypeOrmCrudService<ContentModel> {
   constructor(
     public repo: ContentRepository,
     private configService: CS,
@@ -30,7 +30,7 @@ export class ContentService extends TypeOrmCrudService<ContentDTO> {
     super(repo);
   }
 
-  async deleteOneContent(id: number): Promise<ContentDTO> {
+  async deleteOneContent(id: number): Promise<ContentModel> {
     const s3 = new AWS.S3({
       endpoint: this.configService.get('AWS_SDK_ENDPOINT_NAME'),
     });

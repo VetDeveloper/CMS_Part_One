@@ -3,16 +3,16 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
 import { PlaylistOwnerGuard } from 'src/playlist/guards/playlist-owner.guard';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
-import { PlaylistDTO } from './dto/playlist.dto';
+import { PlaylistModel } from './dto/playlist.dto';
 import { ResponsePlaylistDTO } from './dto/response-playlist.dto';
 import { Playlist } from './playlist.entity';
 import { PlaylistService } from './playlist.service';
 
 @Crud({
   model: {
-    type: PlaylistDTO,
+    type: PlaylistModel,
   },
   serialize: {
     update: ResponsePlaylistDTO,
@@ -45,12 +45,12 @@ import { PlaylistService } from './playlist.service';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: UserDTO) => ({
+  persist: (user: UserModel) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Playlist')
 @Controller('playlists')
-export class PlaylistController implements CrudController<PlaylistDTO> {
+export class PlaylistController implements CrudController<PlaylistModel> {
   constructor(public service: PlaylistService) {}
 }

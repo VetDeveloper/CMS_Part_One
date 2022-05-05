@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { ContentDTO } from './content.dto';
+import { ContentModel } from './content.dto';
 
-export class ResponseContentDTO extends PickType(ContentDTO, [
+export class ResponseContentDTO extends PickType(ContentModel, [
   'id',
   'name',
   'userId',

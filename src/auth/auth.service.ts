@@ -10,7 +10,7 @@ import { CreateUserDTO } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/users.entity';
 import * as bcrypt from 'bcryptjs';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './types/token-payload.type';
@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   private async getTokenObject(
-    user: UserDTO,
+    user: UserModel,
     device: string,
   ): Promise<AuthResponse> {
     const payload: TokenPayload = { email: user.email, id: user.id };
@@ -84,7 +84,7 @@ export class AuthService {
   }
 
   async login(dto: LoginUserDTO): Promise<AuthResponse> {
-    const user: UserDTO = await this.validateUser(dto.email, dto.password);
+    const user: UserModel = await this.validateUser(dto.email, dto.password);
     return this.getTokenObject(user, dto.device);
   }
 
@@ -107,7 +107,7 @@ export class AuthService {
 
   async googleLogin(dto): Promise<AuthResponse> {
     const device: string = 'google';
-    let user: UserDTO = await this.usersService.getUserByEmail(dto.email);
+    let user: UserModel = await this.usersService.getUserByEmail(dto.email);
 
     if (user) {
       return this.getTokenObject(user, device);
@@ -134,7 +134,7 @@ export class AuthService {
       throw new BadRequestException('Истек срок действия refresh token');
     }
 
-    const user: UserDTO = await this.usersService.getUserByEmail(decoded.email);
+    const user: UserModel = await this.usersService.getUserByEmail(decoded.email);
 
     const refToken: RefreshToken = await this.refreshTokenService.findOne({
       where: {

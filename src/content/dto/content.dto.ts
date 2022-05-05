@@ -9,10 +9,10 @@ import {
   MaxLength,
 } from 'class-validator';
 import { FileObject } from 'src/file-object/file-object.entity';
-import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { PlaylistContentModel } from 'src/playlist-content/dto/playlist-content.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 
-export class ContentDTO {
+export class ContentModel {
 
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @IsInt()
@@ -32,16 +32,6 @@ export class ContentDTO {
   @MaxLength(40)
   name: string;
 
-  // @ApiProperty({
-  //   example: [
-  //     'cf850332d0267bTMrh9k4U2g.jpg', 
-  //   ],
-  //   description: 'Массив с ключами файлов на облаке',
-  // })
-  // @IsString({ each: true })
-  // @IsArray()
-  // keys: Array<string>;
-
   @ApiProperty({
     example: '2022-03-12 02:14:08.956309',
     description: 'Дата создания контента',
@@ -54,9 +44,9 @@ export class ContentDTO {
   })
   updatedAt: Date;
 
-  user?: UserDTO;
+  user?: UserModel;
 
-  playlistContents?: PlaylistContentDTO[];
+  playlistContents?: PlaylistContentModel[];
 
   files?: FileObject[];
 }

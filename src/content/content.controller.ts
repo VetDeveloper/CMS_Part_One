@@ -17,11 +17,11 @@ import {
 import { Crud, CrudAuth, CrudController } from '@nestjsx/crud';
 import { ContentOwnerGuard } from 'src/content/guards/content-owner.guard';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.auth.guard';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { User } from 'src/user/users.entity';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
-import { ContentDTO } from './dto/content.dto';
+import { ContentModel } from './dto/content.dto';
 import { CreateContentDTO } from './dto/create-content.dto';
 import { ResponseContentDTO } from './dto/response-content.dto';
 import { UpdateContentDTO } from './dto/update-content.dto';
@@ -34,7 +34,7 @@ import { ResponseFileObject } from 'src/file-object/dto/response-file-object.dto
 
 @Crud({
   model: {
-    type: ContentDTO,
+    type: ContentModel,
   },
   serialize: {
     update: ResponseContentDTO,
@@ -69,13 +69,13 @@ import { ResponseFileObject } from 'src/file-object/dto/response-file-object.dto
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: UserDTO) => ({
+  persist: (user: UserModel) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Content')
 @Controller('contents')
-export class ContentController implements CrudController<ContentDTO> {
+export class ContentController implements CrudController<ContentModel> {
   constructor(public service: ContentService) {}
 
   @UseGuards(JwtAuthGuard, ContentOwnerGuard)
@@ -86,7 +86,7 @@ export class ContentController implements CrudController<ContentDTO> {
   @ApiResponse({
     status: 200,
     description: 'Контент удален успешно',
-    type: ContentDTO,
+    type: ContentModel,
   })
   @Delete('/:id')
   async deleteContent(@Param('id') contentId: number) {
@@ -121,7 +121,7 @@ export class ContentController implements CrudController<ContentDTO> {
   }
 
   @ApiOperation({ summary: 'Удаление файла из контента' })
-  @ApiResponse({ status: 201, type: ContentDTO })
+  @ApiResponse({ status: 201, type: ContentModel })
   @UseGuards(JwtAuthGuard, ContentOwnerGuard)
   @ApiBearerAuth()
   @Delete('/:id/files')

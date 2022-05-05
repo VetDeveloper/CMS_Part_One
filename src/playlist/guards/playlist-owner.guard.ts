@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { PlaylistDTO } from 'src/playlist/dto/playlist.dto';
+import { PlaylistModel } from 'src/playlist/dto/playlist.dto';
 import { Playlist } from 'src/playlist/playlist.entity';
 import { PlaylistService } from 'src/playlist/playlist.service';
 
@@ -21,7 +21,7 @@ export class PlaylistOwnerGuard implements CanActivate {
     const logUserId = req.user.id;
     const PlaylistId = parseInt(req.params.id);
 
-    const ownerId: Promise<PlaylistDTO> =
+    const ownerId: Promise<PlaylistModel> =
       this.playlistService.findOne(PlaylistId);
 
     return ownerId.then((resp) => {

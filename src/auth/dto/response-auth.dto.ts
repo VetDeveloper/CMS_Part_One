@@ -1,9 +1,9 @@
 import { ApiParam, ApiProperty } from '@nestjs/swagger';
 import { ResponseUserDTO } from 'src/user/dto/response-user.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 
 export class AuthResponse {
-  private constructor(user: UserDTO, access_token: string, refresh_token: string) {
+  private constructor(user: UserModel, access_token: string, refresh_token: string) {
     const { password, ...result } = user;
     this.user = result;
     this.access_token = access_token;

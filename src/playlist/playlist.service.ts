@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Repository } from 'typeorm';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
-import { PlaylistDTO } from './dto/playlist.dto';
+import { PlaylistModel } from './dto/playlist.dto';
 import { Playlist } from './playlist.entity';
 import { PlaylistReposityry } from './playlist.repository';
 
 @Injectable()
-export class PlaylistService extends TypeOrmCrudService<PlaylistDTO> {
+export class PlaylistService extends TypeOrmCrudService<PlaylistModel> {
   constructor(public repo: PlaylistReposityry) {
     super(repo);
   }

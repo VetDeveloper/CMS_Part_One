@@ -8,7 +8,7 @@ import { EventService } from './event.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseEventDTO } from './dto/response-event.dto';
 import { EventDTO } from './dto/event.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 
 @Crud({
   model: {
@@ -46,7 +46,7 @@ import { UserDTO } from 'src/user/dto/user.dto';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: UserDTO) => ({
+  persist: (user: UserModel) => ({
     userId: user?.id,
   }),
 })

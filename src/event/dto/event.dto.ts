@@ -7,8 +7,8 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
-import { ScreenDTO } from 'src/screen/dto/screen.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { ScreenModel } from 'src/screen/dto/screen.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 
 export class EventDTO {
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
@@ -45,7 +45,7 @@ export class EventDTO {
   })
   updatedAt: Date;
 
-  user?: UserDTO;
+  user?: UserModel;
 
-  screens?: ScreenDTO[];
+  screens?: ScreenModel[];
 }

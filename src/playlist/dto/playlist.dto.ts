@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { IsInt, IsNumber, IsPositive } from 'class-validator';
-import { PlaylistContentDTO } from 'src/playlist-content/dto/playlist-content.dto';
-import { ScreenDTO } from 'src/screen/dto/screen.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { PlaylistContentModel } from 'src/playlist-content/dto/playlist-content.dto';
+import { ScreenModel } from 'src/screen/dto/screen.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 
-export class PlaylistDTO {
+export class PlaylistModel {
   @ApiProperty({ example: '1', description: 'Идентификационный номер' })
   @IsInt()
   @IsPositive()
@@ -36,9 +36,9 @@ export class PlaylistDTO {
   })
   updatedAt: Date;
 
-  screen?: ScreenDTO;
+  screen?: ScreenModel;
 
-  user?: UserDTO;
+  user?: UserModel;
 
-  playlistContents?: PlaylistContentDTO[];
+  playlistContents?: PlaylistContentModel[];
 }

@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from '../types/token-payload.type';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any): Promise<TokenPayload> {
-    const user: UserDTO = await this.usersService.findOne(payload.id);
+    const user: UserModel = await this.usersService.findOne(payload.id);
     if (!user || payload.email !== user.email) {
       throw new UnauthorizedException('Bad jwt token');
     }

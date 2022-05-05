@@ -15,13 +15,13 @@ import { ScreenService } from './screen.service';
 import { ScreenOwnerGuard } from 'src/screen/guards/screen-owner.guard';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ScreenDTO } from './dto/screen.dto';
-import { UserDTO } from 'src/user/dto/user.dto';
+import { ScreenModel } from './dto/screen.dto';
+import { UserModel } from 'src/user/dto/user.dto';
 import { ResponseScreenDTO } from './dto/response-creen.dto';
 
 @Crud({
   model: {
-    type: ScreenDTO,
+    type: ScreenModel,
   },
 
   params: {
@@ -59,19 +59,19 @@ import { ResponseScreenDTO } from './dto/response-creen.dto';
 })
 @CrudAuth({
   property: 'user',
-  persist: (user: UserDTO) => ({
+  persist: (user: UserModel) => ({
     userId: user?.id,
   }),
 })
 @ApiTags('Screens')
 @Controller('events/:eventId/screens')
-export class ScreenController implements CrudController<ScreenDTO> {
+export class ScreenController implements CrudController<ScreenModel> {
   constructor(
     public service: ScreenService,
     public playlistService: PlaylistService,
   ) {}
 
-  get base(): CrudController<ScreenDTO> {
+  get base(): CrudController<ScreenModel> {
     return this;
   }
 
@@ -81,8 +81,8 @@ export class ScreenController implements CrudController<ScreenDTO> {
   async createOne(
     @ParsedRequest() req: CrudRequest,
   ): Promise<ResponseScreenDTO> {
-    const dto: ScreenDTO = new Screen();
-    const screen: ScreenDTO = await this.base.createOneBase(req, dto);
+    const dto: ScreenModel = new Screen();
+    const screen: ScreenModel = await this.base.createOneBase(req, dto);
     await this.playlistService.createOneByScreen({
       userId: screen.userId,
       screenId: screen.id,

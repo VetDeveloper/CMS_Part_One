@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { PlaylistDTO } from './playlist.dto';
+import { PlaylistModel } from './playlist.dto';
 
-export class ResponsePlaylistDTO extends PickType(PlaylistDTO, [
+export class ResponsePlaylistDTO extends PickType(PlaylistModel, [
   'id',
   'userId',
   'screenId',
